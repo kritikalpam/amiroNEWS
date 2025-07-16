@@ -13,6 +13,13 @@ function AppContent() {
   const [isOnline, setIsOnline] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  const refreshIframe = () => {
+    if (iframeRef.current) {
+      // Setting the src to itself reloads the iframe
+      iframeRef.current.src = AMIRONEWS_URL;
+    }
+  };
+  
   useEffect(() => {
     // Initial check
     if (typeof navigator !== 'undefined') {
@@ -31,12 +38,6 @@ function AppContent() {
     };
   }, []);
 
-  const refreshIframe = () => {
-    if (iframeRef.current) {
-      // Setting the src to itself reloads the iframe
-      iframeRef.current.src = AMIRONEWS_URL;
-    }
-  };
   
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -49,6 +50,34 @@ function AppContent() {
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    let inactivityTimer: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        refreshIframe();
+      }, 15 * 60 * 1000); // 15 minutes
+    };
+
+    const activityEvents: (keyof WindowEventMap)[] = [
+      'mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll'
+    ];
+
+    activityEvents.forEach(event => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    resetTimer(); // Start the timer initially
+
+    return () => {
+      clearTimeout(inactivityTimer);
+      activityEvents.forEach(event => {
+        window.removeEventListener(event, resetTimer);
+      });
     };
   }, []);
 
