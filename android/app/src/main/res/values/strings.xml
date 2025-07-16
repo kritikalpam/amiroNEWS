@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">amiroNEWS</string>
+    <string name="title_activity_main">amiroNEWS</string>
+    <string name="package_name">com.amiro.android.amironews</string>
+    <string name="custom_url_scheme">com.amiro.android.amironews</string>
+</resources>
