@@ -14,13 +14,18 @@ function AppContent() {
 
   const refreshIframe = () => {
     if (iframeRef.current) {
-      const currentSrc = iframeRef.current.src;
-      iframeRef.current.src = '';
-      iframeRef.current.src = currentSrc || AMIRONEWS_URL;
+      // To properly refresh, we set it to about:blank first, then back to the URL.
+      iframeRef.current.src = 'about:blank';
+      setTimeout(() => {
+        if (iframeRef.current) {
+          iframeRef.current.src = AMIRONEWS_URL;
+        }
+      }, 100);
     }
   };
-  
+
   useEffect(() => {
+    // This effect runs only on the client side.
     setIsClient(true);
     setIsOnline(navigator.onLine);
 
@@ -58,7 +63,12 @@ function AppContent() {
   }, []);
 
   if (!isClient) {
-    return null; // or a loading spinner
+    // Render a simple loading indicator or null on the server.
+    return (
+        <div className="flex h-full w-full items-center justify-center">
+            <p>Loading...</p>
+        </div>
+    );
   }
 
   return (
