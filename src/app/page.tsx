@@ -9,12 +9,11 @@ const AMIRONEWS_URL = 'https://amironews.com/';
 
 function AppContent() {
   const [isOnline, setIsOnline] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const refreshIframe = () => {
     if (iframeRef.current) {
-      // By resetting the src, we force the iframe to reload its content.
-      // This avoids the cross-origin security error.
       const currentSrc = iframeRef.current.src;
       iframeRef.current.src = '';
       iframeRef.current.src = currentSrc || AMIRONEWS_URL;
@@ -22,9 +21,8 @@ function AppContent() {
   };
   
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsOnline(navigator.onLine);
-    }
+    setIsClient(true);
+    setIsOnline(navigator.onLine);
 
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
@@ -59,6 +57,9 @@ function AppContent() {
     };
   }, []);
 
+  if (!isClient) {
+    return null; // or a loading spinner
+  }
 
   return (
     <div className="flex flex-col h-full bg-background text-foreground font-body">
@@ -86,13 +87,13 @@ function AppContent() {
 }
 
 function SplashScreen() {
-  const [animationData, setAnimationData] = useState(null);
+  const [animationData, setAnimationData] = useState<any>(null);
 
   useEffect(() => {
-    // IMPORTANT: Replace this URL with the URL of your own hosted Lottie JSON file.
     fetch('https://lottie.host/193149c9-6d60-4669-9233-14c1c990ed34/Dk3a9r54Gf.json')
       .then((response) => response.json())
-      .then((data) => setAnimationData(data));
+      .then((data) => setAnimationData(data))
+      .catch(() => setAnimationData(null));
   }, []);
 
   return (
