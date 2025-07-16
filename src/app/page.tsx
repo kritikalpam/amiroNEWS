@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Newspaper, Rocket } from 'lucide-react';
+import { Newspaper, Rocket, RefreshCw, WifiOff } from 'lucide-react';
 
 const SITES = [
   {
@@ -21,18 +21,74 @@ const SITES = [
 
 export default function Home() {
   const [activeSite, setActiveSite] = useState(SITES[0]);
+  const [isOnline, setIsOnline] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    // Initial check
+    if (typeof navigator !== 'undefined') {
+      setIsOnline(navigator.onLine);
+    }
+
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const refreshIframe = () => {
+    if (iframeRef.current) {
+      iframeRef.current.src = activeSite.url;
+    }
+  };
+  
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        refreshIframe();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [activeSite.url]);
+
 
   return (
     <div className="flex flex-col h-dvh bg-background text-foreground font-body pt-safe">
+      {!isOnline && (
+        <div className="flex items-center justify-center gap-2 bg-destructive text-destructive-foreground p-2 text-sm">
+          <WifiOff className="h-4 w-4" />
+          You are offline. Showing cached content.
+        </div>
+      )}
+       <div className="flex items-center justify-between p-2 border-b">
+        <div className="font-headline text-lg font-bold">Amironews</div>
+        <Button variant="ghost" size="icon" onClick={refreshIframe}>
+          <RefreshCw className="h-4 w-4" />
+          <span className="sr-only">Refresh</span>
+        </Button>
+      </div>
       <main className="flex-1 overflow-auto bg-muted/20">
         <div
           key={activeSite.id}
           className="w-full h-full animate-in fade-in-0 duration-500"
         >
           <iframe
+            ref={iframeRef}
             src={activeSite.url}
             title={activeSite.name}
             className="w-full h-full border-0"
+            sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
           />
         </div>
       </main>
