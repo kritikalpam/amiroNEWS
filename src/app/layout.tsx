@@ -1,4 +1,4 @@
-import type {Metadata} from 'next';
+import type {Metadata, Viewport} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
@@ -7,9 +7,10 @@ import Script from 'next/script';
 export const metadata: Metadata = {
   title: 'Amironews Reader',
   description: 'A simple reader for your favorite websites.',
-  viewport: {
-    viewportFit: 'cover',
-  },
+};
+
+export const viewport: Viewport = {
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({
