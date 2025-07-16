@@ -13,11 +13,11 @@ function AppContent() {
 
   const refreshIframe = () => {
     if (iframeRef.current) {
-      if (iframeRef.current.src !== AMIRONEWS_URL) {
-        iframeRef.current.src = AMIRONEWS_URL;
-      } else {
-        iframeRef.current.contentWindow?.location.reload();
-      }
+      // By resetting the src, we force the iframe to reload its content.
+      // This avoids the cross-origin security error.
+      const currentSrc = iframeRef.current.src;
+      iframeRef.current.src = '';
+      iframeRef.current.src = currentSrc || AMIRONEWS_URL;
     }
   };
   
