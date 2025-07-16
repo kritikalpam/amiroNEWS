@@ -23,7 +23,7 @@ export default function Home() {
   const [activeSite, setActiveSite] = useState(SITES[0]);
 
   return (
-    <div className="flex flex-col h-dvh bg-background text-foreground font-body">
+    <div className="flex flex-col h-dvh bg-background text-foreground font-body pt-safe">
       <main className="flex-1 overflow-auto bg-muted/20">
         <div
           key={activeSite.id}
