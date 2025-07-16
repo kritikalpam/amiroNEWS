@@ -91,7 +91,7 @@ function SplashScreen() {
       <div className="flex-grow flex items-center justify-center">
         <div className="w-64">
           <Image
-            src="https://firebasestorage.googleapis.com/v0/b/firebase-st-v2-dev.appspot.com/o/1723583155702-amironews-light.png?alt=media&token=6f0a6d91-4501-4960-b6bc-f03c05e55e00"
+            src="https://firebasestorage.googleapis.com/v0/b/amironews-22002.appspot.com/o/amironews-light.png?alt=media&token=7c50a963-4417-4861-91a6-91d18721453e"
             alt="Amironews Logo"
             width={512}
             height={128}
@@ -99,7 +99,7 @@ function SplashScreen() {
             priority
           />
           <Image
-            src="https://firebasestorage.googleapis.com/v0/b/firebase-st-v2-dev.appspot.com/o/1723583155702-amironews-dark.png?alt=media&token=e9375496-c651-46ca-a131-0d32115167a3"
+            src="https://firebasestorage.googleapis.com/v0/b/amironews-22002.appspot.com/o/amironews-dark.png?alt=media&token=744573f3-1823-4556-9a5d-b4b391786191"
             alt="Amironews Logo"
             width={512}
             height={128}
