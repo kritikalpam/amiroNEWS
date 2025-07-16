@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { WifiOff } from 'lucide-react';
-import Image from 'next/image';
+import Lottie from "lottie-react";
 
 const AMIRONEWS_URL = 'https://amironews.com/';
 
@@ -86,26 +86,24 @@ function AppContent() {
 }
 
 function SplashScreen() {
+  const [animationData, setAnimationData] = useState(null);
+
+  useEffect(() => {
+    // IMPORTANT: Replace this URL with the URL of your own hosted Lottie JSON file.
+    fetch('https://lottie.host/193149c9-6d60-4669-9233-14c1c990ed34/Dk3a9r54Gf.json')
+      .then((response) => response.json())
+      .then((data) => setAnimationData(data));
+  }, []);
+
   return (
     <div className="flex flex-col h-full w-full items-center justify-center bg-background relative">
       <div className="flex-grow flex items-center justify-center">
         <div className="w-64">
-          <Image
-            src="https://firebasestorage.googleapis.com/v0/b/amironews-22002.appspot.com/o/amironews-light.png?alt=media&token=7c50a963-4417-4861-91a6-91d18721453e"
-            alt="Amironews Logo"
-            width={512}
-            height={128}
-            className="block dark:hidden"
-            priority
-          />
-          <Image
-            src="https://firebasestorage.googleapis.com/v0/b/amironews-22002.appspot.com/o/amironews-dark.png?alt=media&token=744573f3-1823-4556-9a5d-b4b391786191"
-            alt="Amironews Logo"
-            width={512}
-            height={128}
-            className="hidden dark:block"
-            priority
-          />
+          {animationData ? (
+            <Lottie animationData={animationData} loop={true} />
+          ) : (
+            <div className="aspect-square w-full" />
+          )}
         </div>
       </div>
       <div className="w-full bg-gray-200 h-1 absolute bottom-0">
