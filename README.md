@@ -24,11 +24,11 @@ npm install @capacitor/cli @capacitor/core
 Initialize Capacitor in your project. This will create a `capacitor.config.ts` file where you can configure your native app.
 
 ```bash
-npx cap init "Amironews Reader" "com.amironews.reader" --web-dir "out"
+npx cap init "amiroNEWS" "com.amiro.android.amironews" --web-dir "out"
 ```
 
-*   **"Amironews Reader"**: This is your app's name.
-*   **"com.amironews.reader"**: This is your app's unique package ID.
+*   **"amiroNEWS"**: This is your app's name.
+*   **"com.amiro.android.amironews"**: This is your app's unique package ID.
 *   **--web-dir "out"**: This tells Capacitor that the production-ready web files will be in the `out` directory.
 
 ### Step 3: Add the Android Platform
@@ -70,3 +70,4 @@ npx cap open android
 ```
 
 From Android Studio, you can build the `.apk` or `.aab` file required for publishing to the Google Play Store.
+
