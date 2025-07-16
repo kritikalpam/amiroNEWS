@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Newspaper, Rocket, RefreshCw, WifiOff } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 const SITES = [
   {
@@ -20,6 +21,8 @@ const SITES = [
 ];
 
 export default function Home() {
+  // useSearchParams is a client-side hook, so this is a client component.
+  useSearchParams();
   const [activeSite, setActiveSite] = useState(SITES[0]);
   const [isOnline, setIsOnline] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -71,13 +74,6 @@ export default function Home() {
           You are offline. Showing cached content.
         </div>
       )}
-       <div className="flex items-center justify-between p-2 border-b">
-        <div className="font-headline text-lg font-bold">Amironews</div>
-        <Button variant="ghost" size="icon" onClick={refreshIframe}>
-          <RefreshCw className="h-4 w-4" />
-          <span className="sr-only">Refresh</span>
-        </Button>
-      </div>
       <main className="flex-1 overflow-auto bg-muted/20">
         <div
           key={activeSite.id}
