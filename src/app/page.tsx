@@ -3,82 +3,55 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { WifiOff } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 
 const AMIRONEWS_URL = 'https://amironews.com/';
 
 function AppContent() {
-  // useSearchParams is a client-side hook, so this is a client component.
-  useSearchParams();
   const [isOnline, setIsOnline] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const refreshIframe = () => {
     if (iframeRef.current) {
-      // Setting the src to itself reloads the iframe
       iframeRef.current.src = AMIRONEWS_URL;
     }
   };
   
   useEffect(() => {
-    // Initial check
     if (typeof navigator !== 'undefined') {
       setIsOnline(navigator.onLine);
     }
 
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
-
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  
-  useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         refreshIframe();
       }
     };
-
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, []);
-
-  useEffect(() => {
     let inactivityTimer: NodeJS.Timeout;
-
     const resetTimer = () => {
       clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
-        refreshIframe();
-      }, 15 * 60 * 1000); // 15 minutes
+      inactivityTimer = setTimeout(refreshIframe, 15 * 60 * 1000); // 15 minutes
     };
 
     const activityEvents: (keyof WindowEventMap)[] = [
       'mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll'
     ];
-
-    activityEvents.forEach(event => {
-      window.addEventListener(event, resetTimer);
-    });
-
-    resetTimer(); // Start the timer initially
+    activityEvents.forEach(event => window.addEventListener(event, resetTimer));
+    resetTimer();
 
     return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       clearTimeout(inactivityTimer);
-      activityEvents.forEach(event => {
-        window.removeEventListener(event, resetTimer);
-      });
+      activityEvents.forEach(event => window.removeEventListener(event, resetTimer));
     };
   }, []);
 
