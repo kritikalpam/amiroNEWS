@@ -9,12 +9,10 @@ const AMIRONEWS_URL = 'https://amironews.com/';
 
 function AppContent() {
   const [isOnline, setIsOnline] = useState(true);
-  const [isClient, setIsClient] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const refreshIframe = () => {
     if (iframeRef.current) {
-      // To properly refresh, we set it to about:blank first, then back to the URL.
       iframeRef.current.src = 'about:blank';
       setTimeout(() => {
         if (iframeRef.current) {
@@ -25,8 +23,6 @@ function AppContent() {
   };
 
   useEffect(() => {
-    // This effect runs only on the client side.
-    setIsClient(true);
     setIsOnline(navigator.onLine);
 
     const handleOnline = () => setIsOnline(true);
@@ -62,19 +58,10 @@ function AppContent() {
     };
   }, []);
 
-  if (!isClient) {
-    // Render a simple loading indicator or null on the server.
-    return (
-        <div className="flex h-full w-full items-center justify-center">
-            <p>Loading...</p>
-        </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col h-full bg-background text-foreground font-body">
+    <div className="flex flex-col h-full bg-background text-foreground font-body pt-safe-top">
       {!isOnline && (
-        <div className="flex items-center justify-center gap-2 bg-destructive text-destructive-foreground p-2 text-sm flex-shrink-0 pt-safe-top">
+        <div className="flex items-center justify-center gap-2 bg-destructive text-destructive-foreground p-2 text-sm flex-shrink-0">
           <WifiOff className="h-4 w-4" />
           You are offline. Showing cached content.
         </div>
@@ -107,7 +94,7 @@ function SplashScreen() {
   }, []);
 
   return (
-    <div className="flex flex-col h-full w-full items-center justify-center bg-background relative">
+    <div className="flex flex-col h-full w-full items-center justify-center bg-background relative pt-safe-top">
       <div className="flex-grow flex items-center justify-center">
         <div className="w-64">
           {animationData ? (
@@ -127,8 +114,10 @@ function SplashScreen() {
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const timer = setTimeout(() => {
       setShowSplash(false);
     }, 2000); // Show splash for 2 seconds
@@ -136,8 +125,12 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
+  if (!isClient) {
+    return null; // Render nothing on the server to avoid hydration mismatches
+  }
+
   return (
-    <div className="h-full pt-safe-top">
+    <div className="h-full">
       {showSplash ? <SplashScreen /> : <AppContent />}
     </div>
   )
