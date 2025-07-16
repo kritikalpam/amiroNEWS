@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { WifiOff } from 'lucide-react';
+import Image from 'next/image';
 
 const AMIRONEWS_URL = 'https://amironews.com/';
 
@@ -12,7 +13,6 @@ function AppContent() {
 
   const refreshIframe = () => {
     if (iframeRef.current) {
-      // Check if src is different to avoid unnecessary reloads
       if (iframeRef.current.src !== AMIRONEWS_URL) {
         iframeRef.current.src = AMIRONEWS_URL;
       } else {
@@ -89,12 +89,23 @@ function SplashScreen() {
   return (
     <div className="flex flex-col h-full w-full items-center justify-center bg-background relative pt-safe-top">
       <div className="flex-grow flex items-center justify-center">
-        <div className="w-32 h-32">
-          <svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M48.7513 103.5V52.3731H28.4239V42.545H61.6443V103.5H48.7513Z" fill="hsl(var(--foreground))"/>
-            <path d="M66.4533 103.5V42.545H80.5283L100.122 75.9868V42.545H110.5V103.5H96.4251L76.8309 70.0632V103.5H66.4533Z" fill="hsl(var(--foreground))"/>
-            <rect x="1" y="1" width="126" height="126" rx="24" stroke="hsl(var(--foreground))" strokeWidth="2"/>
-          </svg>
+        <div className="w-64">
+          <Image
+            src="https://firebasestorage.googleapis.com/v0/b/firebase-st-v2-dev.appspot.com/o/1723583155702-amironews-dark.png?alt=media&token=e9375496-c651-46ca-a131-0d32115167a3"
+            alt="Amironews Logo"
+            width={512}
+            height={128}
+            className="block dark:hidden"
+            priority
+          />
+          <Image
+            src="https://firebasestorage.googleapis.com/v0/b/firebase-st-v2-dev.appspot.com/o/1723583155702-amironews-light.png?alt=media&token=6f0a6d91-4501-4960-b6bc-f03c05e55e00"
+            alt="Amironews Logo"
+            width={512}
+            height={128}
+            className="hidden dark:block"
+            priority
+          />
         </div>
       </div>
       <div className="w-full bg-gray-200 h-1 absolute bottom-0">
