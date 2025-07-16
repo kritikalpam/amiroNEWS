@@ -54,7 +54,7 @@ function AppContent() {
 
 
   return (
-    <div className="flex flex-col h-full bg-background text-foreground font-body pt-6">
+    <div className="flex flex-col h-full bg-background text-foreground font-body pt-safe-top">
       {!isOnline && (
         <div className="flex items-center justify-center gap-2 bg-destructive text-destructive-foreground p-2 text-sm flex-shrink-0">
           <WifiOff className="h-4 w-4" />
