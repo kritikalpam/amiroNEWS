@@ -6,7 +6,8 @@ const config: CapacitorConfig = {
   webDir: 'out',
   server: {
     androidScheme: 'https'
-  }
+  },
+  cordova: {}
 };
 
 export default config;
