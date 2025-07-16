@@ -87,11 +87,11 @@ function AppContent() {
 
 function SplashScreen() {
   return (
-    <div className="flex flex-col h-full w-full items-center justify-center bg-background relative pt-safe-top">
+    <div className="flex flex-col h-full w-full items-center justify-center bg-background relative">
       <div className="flex-grow flex items-center justify-center">
         <div className="w-64">
           <Image
-            src="https://firebasestorage.googleapis.com/v0/b/firebase-st-v2-dev.appspot.com/o/1723583155702-amironews-dark.png?alt=media&token=e9375496-c651-46ca-a131-0d32115167a3"
+            src="https://firebasestorage.googleapis.com/v0/b/firebase-st-v2-dev.appspot.com/o/1723583155702-amironews-light.png?alt=media&token=6f0a6d91-4501-4960-b6bc-f03c05e55e00"
             alt="Amironews Logo"
             width={512}
             height={128}
@@ -99,7 +99,7 @@ function SplashScreen() {
             priority
           />
           <Image
-            src="https://firebasestorage.googleapis.com/v0/b/firebase-st-v2-dev.appspot.com/o/1723583155702-amironews-light.png?alt=media&token=6f0a6d91-4501-4960-b6bc-f03c05e55e00"
+            src="https://firebasestorage.googleapis.com/v0/b/firebase-st-v2-dev.appspot.com/o/1723583155702-amironews-dark.png?alt=media&token=e9375496-c651-46ca-a131-0d32115167a3"
             alt="Amironews Logo"
             width={512}
             height={128}
@@ -128,7 +128,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="h-full">
+    <div className="h-full pt-safe-top">
       {showSplash ? <SplashScreen /> : <AppContent />}
     </div>
   )
