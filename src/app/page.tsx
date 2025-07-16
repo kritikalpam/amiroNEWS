@@ -137,9 +137,14 @@ export default function Home() {
 
   return (
     <div className="bg-gray-800 p-4 sm:p-8">
-      <div className="w-full max-w-[420px] h-[840px] bg-black border-4 border-gray-600 rounded-[60px] shadow-2xl overflow-hidden relative mx-auto">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-8 bg-black rounded-b-2xl z-20"></div>
-        <div className="h-full w-full bg-white rounded-[56px] overflow-hidden pt-safe-top">
+      <div className="w-full max-w-[420px] h-[840px] bg-black border-4 border-gray-600 rounded-[60px] shadow-2xl overflow-hidden relative mx-auto flex flex-col">
+        {/* Notch and Status Bar Area */}
+        <div className="h-14 flex-shrink-0 relative">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-8 bg-black rounded-b-2xl z-20"></div>
+        </div>
+        
+        {/* App Content Area */}
+        <div className="h-full w-full bg-white rounded-b-[56px] overflow-hidden">
             {showSplash ? <SplashScreen /> : <AppContent />}
         </div>
       </div>
