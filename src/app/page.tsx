@@ -1,3 +1,66 @@
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Newspaper, Rocket } from 'lucide-react';
+
+const SITES = [
+  {
+    id: 'amironews',
+    name: 'Amironews',
+    url: 'https://amironews.com/',
+    icon: <Newspaper className="h-5 w-5" />,
+  },
+  {
+    id: 'studio',
+    name: 'Firebase Studio',
+    url: 'https://studio.firebase.google.com/studio-6936726665',
+    icon: <Rocket className="h-5 w-5" />,
+  },
+];
+
 export default function Home() {
-  return <></>;
+  const [activeSite, setActiveSite] = useState(SITES[0]);
+
+  return (
+    <div className="flex flex-col h-dvh bg-background text-foreground font-body">
+      <header className="flex-shrink-0 border-b border-border shadow-sm bg-card">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <h1 className="text-2xl sm:text-3xl font-headline font-bold text-foreground">
+              Amironews Reader
+            </h1>
+            <nav className="flex items-center space-x-1 sm:space-x-2">
+              {SITES.map((site) => (
+                <Button
+                  key={site.id}
+                  variant={activeSite.id === site.id ? 'secondary' : 'ghost'}
+                  onClick={() => setActiveSite(site)}
+                  className="transition-colors duration-200"
+                  aria-label={`Switch to ${site.name}`}
+                  aria-current={activeSite.id === site.id ? 'page' : undefined}
+                >
+                  {site.icon}
+                  <span className="ml-2 hidden sm:inline-flex">{site.name}</span>
+                </Button>
+              ))}
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      <main className="flex-1 overflow-auto bg-muted/20">
+        <div
+          key={activeSite.id}
+          className="w-full h-full animate-in fade-in-0 duration-500"
+        >
+          <iframe
+            src={activeSite.url}
+            title={activeSite.name}
+            className="w-full h-full border-0"
+          />
+        </div>
+      </main>
+    </div>
+  );
 }
