@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { WifiOff } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 
 const AMIRONEWS_URL = 'https://amironews.com/';
 
@@ -99,7 +100,7 @@ function AppContent() {
             src={AMIRONEWS_URL}
             title="Amironews"
             className="w-full h-full border-0"
-            sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
+            sandbox="allow-forms allow-modals allow-pointer-lock allow-same-origin allow-scripts"
           />
         </div>
       </main>
@@ -112,11 +113,7 @@ function SplashScreen() {
     <div className="flex flex-col h-full w-full items-center justify-center bg-background relative">
       <div className="flex-grow flex items-center justify-center">
         <div className="w-32 h-32">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="50" fill="#405a9a"/>
-            <circle cx="50" cy="50" r="38" fill="#ffffff"/>
-            <circle cx="50" cy="50" r="12" fill="#d93142"/>
-          </svg>
+          <Image src="/icon.png" alt="Amironews Logo" width={128} height={128} />
         </div>
       </div>
       <div className="w-full bg-gray-200 h-1 absolute bottom-0">
@@ -141,9 +138,9 @@ export default function Home() {
   return (
     <div className="bg-gray-800 min-h-dvh flex items-center justify-center p-4 sm:p-8">
       <div className="w-full max-w-[420px] h-[840px] bg-black border-4 border-gray-600 rounded-[60px] shadow-2xl overflow-hidden relative">
-        <div className="h-full w-full bg-white rounded-[56px] overflow-hidden pt-safe-top">
+        <div className="h-full w-full bg-white rounded-[56px] overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-8 bg-black rounded-b-2xl z-10"></div>
-          <div className="h-full w-full bg-white rounded-[40px] overflow-hidden pt-8">
+          <div className="h-full w-full bg-white rounded-[40px] overflow-hidden pt-safe-top">
             {showSplash ? <SplashScreen /> : <AppContent />}
           </div>
         </div>
