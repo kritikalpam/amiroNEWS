@@ -80,13 +80,18 @@ function AppContent() {
 
 function SplashScreen() {
   return (
-    <div className="flex h-full w-full items-center justify-center bg-background">
-      <div className="w-32 h-32 animate-pulse">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="50" fill="#405a9a"/>
-          <circle cx="50" cy="50" r="38" fill="#ffffff"/>
-          <circle cx="50" cy="50" r="12" fill="#d93142"/>
-        </svg>
+    <div className="flex flex-col h-full w-full items-center justify-center bg-background relative">
+      <div className="flex-grow flex items-center justify-center">
+        <div className="w-32 h-32">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="50" fill="#405a9a"/>
+            <circle cx="50" cy="50" r="38" fill="#ffffff"/>
+            <circle cx="50" cy="50" r="12" fill="#d93142"/>
+          </svg>
+        </div>
+      </div>
+      <div className="w-full bg-gray-200 h-1 absolute bottom-0">
+        <div className="bg-red-600 h-1 animate-loading-bar"></div>
       </div>
     </div>
   );
