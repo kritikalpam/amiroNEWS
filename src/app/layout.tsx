@@ -11,6 +11,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   viewportFit: 'cover',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -26,7 +30,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter&family=Literata&display=swap" rel="stylesheet" />
-        <Script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async="" />
+        <Script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" strategy="beforeInteractive" />
         <Script id="onesignal-init" strategy="beforeInteractive">
           {`
             window.OneSignal = window.OneSignal || [];

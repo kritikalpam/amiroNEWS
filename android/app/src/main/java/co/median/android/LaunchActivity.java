@@ -1,4 +1,1 @@
-package co.median.android;
-
-public class LaunchActivity extends MainActivity{
-}
+// This file is no longer needed with the new Capacitor setup.

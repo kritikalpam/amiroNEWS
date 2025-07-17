@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -13,9 +12,8 @@ function AppContent() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const refreshIframe = () => {
-    if (iframeRef.current) {
-      iframeRef.current.src = 'about:blank';
-      setTimeout(() => {
+    if (iframeRef.current && iframeRef.current.src !== AMIRONEWS_URL) {
+       setTimeout(() => {
         if (iframeRef.current) {
           iframeRef.current.src = AMIRONEWS_URL;
         }
@@ -24,42 +22,42 @@ function AppContent() {
   };
 
   useEffect(() => {
-    // Ensure this runs only on the client
-    if (typeof window !== 'undefined') {
-      setIsOnline(navigator.onLine);
+    if (typeof window === 'undefined') return;
 
-      const handleOnline = () => setIsOnline(true);
-      const handleOffline = () => setIsOnline(false);
-      window.addEventListener('online', handleOnline);
-      window.addEventListener('offline', handleOffline);
+    setIsOnline(navigator.onLine);
 
-      const handleVisibilityChange = () => {
-        if (document.visibilityState === 'visible') {
-          refreshIframe();
-        }
-      };
-      document.addEventListener('visibilitychange', handleVisibilityChange);
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
 
-      let inactivityTimer: NodeJS.Timeout;
-      const resetTimer = () => {
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(refreshIframe, 15 * 60 * 1000); // 15 minutes
-      };
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
 
-      const activityEvents: (keyof WindowEventMap)[] = [
-        'mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll'
-      ];
-      activityEvents.forEach(event => window.addEventListener(event, resetTimer));
-      resetTimer();
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        refreshIframe();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
-      return () => {
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-        clearTimeout(inactivityTimer);
-        activityEvents.forEach(event => window.removeEventListener(event, resetTimer));
-      };
-    }
+    let inactivityTimer: NodeJS.Timeout;
+    const resetTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(refreshIframe, 15 * 60 * 1000); // 15 minutes
+    };
+
+    const activityEvents: (keyof WindowEventMap)[] = [
+      'mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll'
+    ];
+    activityEvents.forEach(event => window.addEventListener(event, resetTimer));
+    resetTimer();
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearTimeout(inactivityTimer);
+      activityEvents.forEach(event => window.removeEventListener(event, resetTimer));
+    };
   }, []);
 
   return (
@@ -117,28 +115,27 @@ function SplashScreen() {
 
 
 export default function Home() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(Capacitor.isNativePlatform());
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    if (Capacitor.isNativePlatform()) {
+    if (showSplash) {
       const timer = setTimeout(() => {
         setShowSplash(false);
-      }, 2000); // Show splash for 2 seconds on native
+      }, 2000); 
       return () => clearTimeout(timer);
-    } else {
-      setShowSplash(false); // Immediately hide splash on web
     }
-  }, []);
+  }, [showSplash]);
 
   if (!isClient) {
-    return null; // Render nothing on the server to avoid hydration mismatches
+    // Render a static splash screen on the server to avoid layout shift
+    return <SplashScreen />;
   }
-
+  
   return (
-    <div className="h-full">
+    <div className="h-dvh">
       {showSplash ? <SplashScreen /> : <AppContent />}
     </div>
-  )
+  );
 }
