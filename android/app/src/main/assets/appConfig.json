@@ -1,0 +1,394 @@
+{
+  "general": {
+    "userAgentRegexes": [],
+    "replaceStrings": [],
+    "publicKey": "kbnrmm",
+    "deviceRegKey": "36k54qmwcd3bcb9wfhjpnjfz38",
+    "appName": "amiroNEWS",
+    "initialUrl": "https://amironews.com",
+    "keepScreenOn": true,
+    "screenOrientation": {
+      "iphone": null,
+      "ipad": null,
+      "androidPhone": null,
+      "androidTablet": null
+    },
+    "enableWindowOpen": true,
+    "userAgentAdd": "amiro",
+    "forceUserAgent": "",
+    "iosUserAgentAdd": "amiroNEWS",
+    "iosForceUserAgent": "",
+    "androidUserAgentAdd": "amiroNEWS",
+    "androidForceUserAgent": "",
+    "languages": [],
+    "nativeBridgeUrls": [],
+    "iosBundleId": "co.median.ios.amiro",
+    "androidPackageName": "co.median.android.amiro",
+    "androidVersionName": "K 0.1",
+    "androidSigningKey": "release",
+    "iosCustomHeaders": {},
+    "androidCustomHeaders": {},
+    "injectMedianJS": false,
+    "forceSessionCookieExpiry": 86400,
+    "version": 16
+  },
+  "navigation": {
+    "ignorePageFinishedRegexes": [],
+    "redirects": [],
+    "iosSettings": {},
+    "iosPullToRefresh": true,
+    "androidPullToRefresh": true,
+    "swipeGestures": true,
+    "iosConnectionOfflineTime": 10,
+    "androidConnectionOfflineTime": 10,
+    "androidOfflinePageUrl": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/android_offline_html.html?versionId=g91R1mYgQoR1kilCU8Wcqhu3BpGaR9JQ",
+    "androidOfflinePageUrlExternal": "https://amironews.com/",
+    "regexInternalExternal": {
+      "active": true,
+      "rules": [
+        {
+          "mode": "external",
+          "label": "Non-web links",
+          "pagesToTrigger": "custom",
+          "regex": "^(?!https?://).*"
+        },
+        {
+          "mode": "appbrowser",
+          "label": "Facebook",
+          "pagesToTrigger": "custom",
+          "regex": "https?://([-\\w]+\\.)*facebook\\.com.*"
+        },
+        {
+          "mode": "appbrowser",
+          "label": "Twitter/X",
+          "pagesToTrigger": "custom",
+          "regex": "https?://([\\-\\w]+\\.)*(twitter|x)\\.com/.*"
+        },
+        {
+          "mode": "appbrowser",
+          "label": "Instagram",
+          "pagesToTrigger": "custom",
+          "regex": "https?://([-\\w]+\\.)*instagram\\.com/.*"
+        },
+        {
+          "mode": "appbrowser",
+          "label": "Google Maps",
+          "pagesToTrigger": "custom",
+          "regex": "https?://maps\\.google\\.com.*"
+        },
+        {
+          "mode": "appbrowser",
+          "label": "Google Maps Search",
+          "pagesToTrigger": "custom",
+          "regex": "https?://([-\\w]+\\.)*google\\.com/maps/search/.*"
+        },
+        {
+          "mode": "appbrowser",
+          "label": "LinkedIn",
+          "pagesToTrigger": "custom",
+          "regex": "https?://([-\\w]+\\.)*linkedin\\.com/.*"
+        },
+        {
+          "mode": "internal",
+          "label": "Microsoft Login",
+          "pagesToTrigger": "custom",
+          "regex": "https?://login\\.microsoftonline\\.com.*"
+        },
+        {
+          "mode": "internal",
+          "label": "All pages on my domain",
+          "pagesToTrigger": "domain",
+          "regex": "https?:\\/\\/([-\\w]+\\.)*amironews.com(\\/.*)?$"
+        },
+        {
+          "mode": "appbrowser",
+          "label": "All Other Links",
+          "pagesToTrigger": "all",
+          "regex": ".*"
+        }
+      ]
+    },
+    "deepLinkDomains": {
+      "enableAndroidApplinks": false,
+      "domains": []
+    },
+    "navigationTitles": {
+      "active": true,
+      "titles": []
+    },
+    "iosShowRefreshButton": false,
+    "androidShowRefreshButton": false,
+    "actionConfig": {
+      "active": true,
+      "actions": [],
+      "actionSelection": []
+    },
+    "navigationLevels": {
+      "active": true,
+      "levels": []
+    },
+    "sidebarNavigation": {
+      "menuSelectionConfig": {
+        "redirectLocations": [
+          {
+            "regex": ".*",
+            "menuName": "default",
+            "loggedIn": true
+          }
+        ]
+      },
+      "menus": [
+        {
+          "active": false,
+          "items": [
+            {
+              "url": "https://amironews.com/#jeg_loginform",
+              "label": "Login",
+              "subLinks": []
+            },
+            {
+              "url": "https://amironews.com/#jeg_registerform",
+              "label": "Register",
+              "subLinks": []
+            }
+          ],
+          "name": "default"
+        }
+      ]
+    },
+    "tabNavigation": {
+      "active": false,
+      "tabMenus": [],
+      "tabSelectionConfig": []
+    },
+    "androidShowOfflinePage": true,
+    "iosShowOfflinePage": true,
+    "toolbarNavigation": {
+      "enabled": false,
+      "visibilityByPages": "allPages",
+      "visibilityByBackButton": "backButtonActive",
+      "regexes": [
+        {
+          "enabled": true,
+          "regex": ".*"
+        }
+      ],
+      "items": [
+        {
+          "system": "back",
+          "titleType": "defaultText",
+          "visibility": "allPages",
+          "urlRegex": [
+            {
+              "enabled": true,
+              "regex": ".*"
+            }
+          ]
+        },
+        {
+          "system": "refresh",
+          "enabled": false,
+          "visibility": "allPages",
+          "urlRegex": [
+            {
+              "enabled": true,
+              "regex": ".*"
+            }
+          ]
+        },
+        {
+          "system": "forward",
+          "enabled": false,
+          "titleType": "defaultText",
+          "visibility": "allPages",
+          "urlRegex": [
+            {
+              "enabled": true,
+              "regex": ".*"
+            }
+          ]
+        }
+      ]
+    },
+    "maxWindows": {
+      "enabled": false,
+      "numWindows": 5,
+      "autoClose": false
+    },
+    "iosOfflinePageUrl": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/android_offline_html.html?versionId=g91R1mYgQoR1kilCU8Wcqhu3BpGaR9JQ",
+    "iosOfflinePageUrlExternal": "https://amironews.com/"
+  },
+  "styling": {
+    "splashScreen": {
+      "ios": {
+        "backgroundImage": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068369_zbuynkgwc85wc_FFFFFF_1_2x2.png?versionId=qZQN_D3BeaQJjczIZpTpyPvk91wkQeMH",
+        "backgroundImageDark": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068391_c7zhtegb3uatr_505050_1_2x2.png?versionId=BrPB5LVq_HxaU.MJ2TkymBkQD4fMo3_g",
+        "backgroundColor": "#FFFFFF",
+        "backgroundColorDark": "#505050",
+        "centerImage": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/splashscreen_ios.png?versionId=L47suKzJ_cNZO9XgJMb2s03iMqQ9bFQI",
+        "centerImageDark": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/splashscreen_ios_dark.png?versionId=K9nUZHje8oblb.N1SPYaIPmaur7Svg9P",
+        "animation": null,
+        "animationDark": null,
+        "animationFrame": null,
+        "animationFrameDark": null,
+        "animationLoop": "once",
+        "animated": false
+      },
+      "android": {
+        "launchImages": {
+          "mdpi": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068556_7bxcx1m5zw64y_180x180.png?versionId=gzWG7.sGGvqJiwjjgd_ihNbZzIBurgUt",
+          "hdpi": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068579_4vnjdjk9narce_270x270.png?versionId=wt1feGLzPHuytYaIdMrj.4dXQCVZ0Eny",
+          "xhdpi": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068620_gjg4ppnjf73mm_360x360.png?versionId=Gjb2Vt41tZchgDJtkc7MFFkBV4z.VeTH",
+          "xxhdpi": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068650_5b549n0w7xunj_540x540.png?versionId=UgZ2LbQkwV1H8YGfxMzaBH2u7fF52ntg",
+          "xxxhdpi": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068696_zr9n1u8vr6fn0_720x720.png?versionId=nU0VgKo.aR6LAPsTXfqT4OVsbtrGxCVb"
+        },
+        "launchImagesDark": {
+          "mdpi": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068769_5xm2jxgu3wbu2_180x180.png?versionId=n0uNG8CUTxshvC6sOEG1ozHPSacZeFRU",
+          "hdpi": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068808_ceqmwtnrfqz82_270x270.png?versionId=Deb6IpWlnLEyIE.sbFEmJwqYgJatW1Tm",
+          "xhdpi": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068881_cnxkm8f151y96_360x360.png?versionId=8Gjt7iV_bYrTPxJVR4yz1vBlu0tstn3c",
+          "xxhdpi": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059068947_a3d6nphn96e3g_540x540.png?versionId=Jkt_OMSySB0mEF_67wK545iT6fW8_cMo",
+          "xxxhdpi": "https://gonativeio.s3.amazonaws.com/app_files/kbnrmm/1752059069016_1cphg56uue7w2_720x720.png?versionId=KYGLqoUM9vZ9glPuUgE31RS6KjGESAyT"
+        },
+        "showSplash": true,
+        "backgroundColor": "#FFFFFF",
+        "backgroundColorDark": "#505050",
+        "animation": null,
+        "animationDark": null,
+        "animationFrame": null,
+        "animationFrameDark": null,
+        "animationLoop": "once",
+        "animated": false
+      }
+    },
+    "transitionInteractiveDelayMax": 0.2,
+    "menuAnimationDuration": 0.15,
+    "iosTheme": "default",
+    "androidTabPressedBackgroundColor": "#CCCCCC",
+    "androidTabPressedBackgroundColorDark": "#999999",
+    "androidBackgroundColor": "#FFFFFF",
+    "androidBackgroundColorDark": "#333333",
+    "icon": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/app_icon_ios.png?versionId=AV9lNBHCHNvRIaZDC.qa7e7nQ17VxJKu",
+    "iosIcon": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/app_icon_ios.png?versionId=AV9lNBHCHNvRIaZDC.qa7e7nQ17VxJKu",
+    "customIcons": {},
+    "iosDarkMode": "auto",
+    "iosEnableBlurInStatusBar": false,
+    "iosStatusBarStyle": "auto",
+    "iosEnableOverlayInStatusBar": false,
+    "iosStatusBarBackgroundColor": "#ffffffff",
+    "iosStatusBarBackgroundColorDark": "#000000",
+    "androidStatusBarStyle": "auto",
+    "androidEnableOverlayInStatusBar": false,
+    "androidStatusBarBackgroundColor": "#5C5C5C",
+    "androidStatusBarBackgroundColorDark": "#333333",
+    "iosTintColor": "#0E0D08",
+    "iosTintColorDark": "#ffffff",
+    "androidIcon": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/app_icon_android.png?versionId=MBpqarRIok7F16uDdmZpsZ578btEFbSg",
+    "androidTheme": "auto",
+    "androidAccentColor": "#0f2a6a",
+    "androidAccentColorDark": "#cc3534",
+    "androidSystemNavBarColor": "#FFFFFF",
+    "androidSystemNavBarColorDark": "#000000",
+    "androidPullToRefreshColor": "#cc3534",
+    "androidPullToRefreshColorDark": "#FFFFFF",
+    "iosActivityIndicatorColor": "#808080",
+    "iosActivityIndicatorColorDark": "#808080",
+    "androidActivityIndicatorColor": "#808080",
+    "androidActivityIndicatorColorDark": "#808080",
+    "androidWebviewTextZoom": null,
+    "hideWebviewAlpha": 0.5,
+    "forceViewportWidth": null,
+    "pinchToZoom": null,
+    "iosDynamicType": null,
+    "androidSwipeNavigationBackgroundColor": "#eeeeee",
+    "androidSwipeNavigationBackgroundColorDark": "#505050",
+    "androidSwipeNavigationActiveColor": "#eeeeee",
+    "androidSwipeNavigationActiveColorDark": "#505050",
+    "androidSwipeNavigationInactiveColor": "#eeeeee",
+    "androidSwipeNavigationInactiveColorDark": "#505050",
+    "navigationTitleImageLocation": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/header_ios.png?versionId=WcANEpsHATDlUVy4QQfrj3P4wnzX_Uxq",
+    "navigationTitleImageLocationDark": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/header_ios_dark.png?versionId=R3eobCdq1ORqHW2RGg9Ym_1jr8nKLH9X",
+    "iosTitleColor": "#0E0D08",
+    "iosTitleColorDark": "#ffffff",
+    "iosNavigationBarTintColor": "#f8f8f8",
+    "iosNavigationBarTintColorDark": "#202020",
+    "androidActionBarBackgroundColor": "#FFFFFF",
+    "androidActionBarBackgroundColorDark": "#333333",
+    "androidHeaderImage": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/header_android.png?versionId=iwdgGZXe7gJKslI4E9Ry1XBWVJUSyTLM",
+    "androidHeaderImageDark": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/header_android_dark.png?versionId=ZnXu0JZ3Hs58jUc4F_sPNNhVvoHC9DtX",
+    "androidActionBarForegroundColor": "#1A100B",
+    "androidActionBarForegroundColorDark": "#FFFFFF",
+    "iosSidebarBackgroundColor": "#f8f8f8",
+    "iosSidebarBackgroundColorDark": "#202020",
+    "iosSidebarFont": "Default",
+    "iosHeaderImage": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/app_icon_ios.png?versionId=AV9lNBHCHNvRIaZDC.qa7e7nQ17VxJKu",
+    "iosHeaderImageDark": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/app_icon_ios.png?versionId=AV9lNBHCHNvRIaZDC.qa7e7nQ17VxJKu",
+    "iosSidebarTextColor": "#0E0D08",
+    "iosSidebarTextColorDark": "#ffffff",
+    "androidSidebarBackgroundColor": "#FFFFFF",
+    "androidSidebarBackgroundColorDark": "#333333",
+    "androidSidebarForegroundColor": "#1A100B",
+    "androidSidebarForegroundColorDark": "#FFFFFF",
+    "androidSidebarSeparatorColor": "#CCCCCC",
+    "androidSidebarSeparatorColorDark": "#666666",
+    "androidSidebarHighlightColor": "#1A100B",
+    "androidSidebarHighlightColorDark": "#FFFFFF",
+    "androidShowLogoInSideBar": true,
+    "androidShowAppNameInSideBar": true,
+    "androidTabBarBackgroundColor": "#FFFFFF",
+    "androidTabBarBackgroundColorDark": "#333333",
+    "androidTabBarTextColor": "#949494",
+    "androidTabBarTextColorDark": "#FFFFFF",
+    "androidTabBarIndicatorColor": "#1A100B",
+    "androidTabBarIndicatorColorDark": "#666666",
+    "iosTabBarTintColor": "#f8f8f8",
+    "iosTabBarTintColorDark": "#000000",
+    "iosTabBarInactiveColor": "#A1A1A1",
+    "iosTabBarInactiveColorDark": "#818181",
+    "androidNotificationIcon": "https://s3.amazonaws.com/gonativeio/app_files/kbnrmm/onesignal_icon_android.png?versionId=tgcRDbtBAcrG3akkWOiExgi3rpCsoZoa",
+    "disableAnimations": false,
+    "navigationTitleImage": true,
+    "androidHideTitleInActionBar": true,
+    "showNavigationBar": false,
+    "showActionBar": false
+  },
+  "allowZoom": null,
+  "contextMenu": {
+    "enabled": false,
+    "linkActions": [
+      "copyLink",
+      "openExternal"
+    ]
+  },
+  "security": {
+    "network": {
+      "allowInsecure": null
+    }
+  },
+  "permissions": {
+    "usesGeolocation": true,
+    "iosLocationUsageDescription": "",
+    "iosCameraUsageDescription": "",
+    "iosMicrophoneUsageDescription": "",
+    "enableWebRTCamera": true,
+    "enableWebRTCMicrophone": true,
+    "androidDownloadToPublicStorage": false,
+    "iOSATTUserTrackingDescription": "",
+    "iOSRequestATTConsentOnLoad": false
+  },
+  "developmentTools": {
+    "enableWebConsoleLogs": true
+  },
+  "services": {
+    "oneSignal": {
+      "active": true,
+      "applicationId": "3508a1ed-ec7c-45dc-8b41-a0652886dad4",
+      "clearNotificationsOnLaunch": true
+    },
+    "backgroundLocation": {
+      "active": true
+    },
+    "auth": {
+      "active": true
+    }
+  }
+}

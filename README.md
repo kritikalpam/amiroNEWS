@@ -71,3 +71,41 @@ npx cap open android
 
 From Android Studio, you can build the `.apk` or `.aab` file required for publishing to the Google Play Store.
 
+## Building for iOS (as a Progressive Web App)
+
+The process for building an iOS app is similar to Android, but it requires a macOS computer with Xcode installed.
+
+### Step 1: Add the iOS Platform
+
+Add the native iOS platform to your project.
+
+```bash
+npx cap add ios
+```
+This command creates an `ios` directory in your project root, which contains a native Xcode project.
+
+### Step 2: Build Your Web App
+
+If you haven't made changes since your last build, you can skip this step. Otherwise, create a fresh static build of your Next.js app.
+
+```bash
+npm run build
+```
+
+### Step 3: Sync Your Web App with Capacitor
+
+Sync your built web assets with the native iOS project.
+
+```bash
+npx cap sync ios
+```
+
+### Step 4: Open and Run in Xcode
+
+Open the native project in Xcode to run it on an emulator or a physical device.
+
+```bash
+npx cap open ios
+```
+
+From Xcode, you can configure signing, test your app, and archive it for submission to the Apple App Store.
