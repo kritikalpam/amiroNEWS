@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { WifiOff } from 'lucide-react';
 import Lottie from "lottie-react";
-import { isNativePlatform } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core';
 
 const AMIRONEWS_URL = 'https://amironews.com/';
 
@@ -122,7 +122,7 @@ export default function Home() {
 
   useEffect(() => {
     setIsClient(true);
-    if (isNativePlatform()) {
+    if (Capacitor.isNativePlatform()) {
       const timer = setTimeout(() => {
         setShowSplash(false);
       }, 2000); // Show splash for 2 seconds on native
