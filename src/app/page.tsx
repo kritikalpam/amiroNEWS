@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { WifiOff } from 'lucide-react';
 import Lottie from "lottie-react";
+import { isNativePlatform } from '@capacitor/core';
 
 const AMIRONEWS_URL = 'https://amironews.com/';
 
@@ -23,39 +24,42 @@ function AppContent() {
   };
 
   useEffect(() => {
-    setIsOnline(navigator.onLine);
+    // Ensure this runs only on the client
+    if (typeof window !== 'undefined') {
+      setIsOnline(navigator.onLine);
 
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+      const handleOnline = () => setIsOnline(true);
+      const handleOffline = () => setIsOnline(false);
+      window.addEventListener('online', handleOnline);
+      window.addEventListener('offline', handleOffline);
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        refreshIframe();
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+          refreshIframe();
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    let inactivityTimer: NodeJS.Timeout;
-    const resetTimer = () => {
-      clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(refreshIframe, 15 * 60 * 1000); // 15 minutes
-    };
+      let inactivityTimer: NodeJS.Timeout;
+      const resetTimer = () => {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(refreshIframe, 15 * 60 * 1000); // 15 minutes
+      };
 
-    const activityEvents: (keyof WindowEventMap)[] = [
-      'mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll'
-    ];
-    activityEvents.forEach(event => window.addEventListener(event, resetTimer));
-    resetTimer();
+      const activityEvents: (keyof WindowEventMap)[] = [
+        'mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll'
+      ];
+      activityEvents.forEach(event => window.addEventListener(event, resetTimer));
+      resetTimer();
 
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      clearTimeout(inactivityTimer);
-      activityEvents.forEach(event => window.removeEventListener(event, resetTimer));
-    };
+      return () => {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        clearTimeout(inactivityTimer);
+        activityEvents.forEach(event => window.removeEventListener(event, resetTimer));
+      };
+    }
   }, []);
 
   return (
@@ -118,11 +122,14 @@ export default function Home() {
 
   useEffect(() => {
     setIsClient(true);
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 2000); // Show splash for 2 seconds
-
-    return () => clearTimeout(timer);
+    if (isNativePlatform()) {
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+      }, 2000); // Show splash for 2 seconds on native
+      return () => clearTimeout(timer);
+    } else {
+      setShowSplash(false); // Immediately hide splash on web
+    }
   }, []);
 
   if (!isClient) {
