@@ -29,9 +29,15 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter&family=Literata&display=swap" rel="stylesheet" />
-        <Script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" strategy="beforeInteractive" />
-        <Script id="onesignal-init" strategy="beforeInteractive">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:opsz,wght@7..72,400;7..72,700&display=swap" rel="stylesheet" />
+        <Script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async="" />
+      </head>
+      <body className="font-body antialiased h-full">
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
+        <Toaster />
+        <Script id="onesignal-init">
           {`
             window.OneSignal = window.OneSignal || [];
             OneSignal.push(function() {
@@ -41,12 +47,6 @@ export default function RootLayout({
             });
           `}
         </Script>
-      </head>
-      <body className="font-body antialiased h-full">
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
-        <Toaster />
       </body>
     </html>
   );

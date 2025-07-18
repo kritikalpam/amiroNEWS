@@ -107,15 +107,6 @@ export default {
         'safe-x': 'env(safe-area-inset-left) env(safe-area-inset-right)',
         'safe-y': 'env(safe-area-inset-top) env(safe-area-inset-bottom)',
       },
-      padding: {
-        'safe': 'env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)',
-        'safe-top': 'env(safe-area-inset-top)',
-        'safe-bottom': 'env(safe-area-inset-bottom)',
-        'safe-left': 'env(safe-area-inset-left)',
-        'safe-right': 'env(safe-area-inset-right)',
-        'safe-x': 'env(safe-area-inset-left) env(safe-area-inset-right)',
-        'safe-y': 'env(safe-area-inset-top) env(safe-area-inset-bottom)',
-      }
     },
   },
   plugins: [require('tailwindcss-animate')],

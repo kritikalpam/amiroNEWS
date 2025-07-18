@@ -11,27 +11,37 @@ function AppContent() {
   const [isOnline, setIsOnline] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsOnline(navigator.onLine);
+
+      const handleOnline = () => setIsOnline(true);
+      const handleOffline = () => setIsOnline(false);
+
+      window.addEventListener('online', handleOnline);
+      window.addEventListener('offline', handleOffline);
+
+      return () => {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+      };
+    }
+  }, []);
+
   const refreshIframe = () => {
-    if (iframeRef.current && iframeRef.current.src !== AMIRONEWS_URL) {
+    if (iframeRef.current) {
        setTimeout(() => {
         if (iframeRef.current) {
-          iframeRef.current.src = AMIRONEWS_URL;
+          // To avoid caching issues, append a timestamp
+          const url = new URL(AMIRONEWS_URL);
+          url.searchParams.set('t', Date.now().toString());
+          iframeRef.current.src = url.toString();
         }
       }, 100);
     }
   };
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    setIsOnline(navigator.onLine);
-
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         refreshIframe();
@@ -52,8 +62,6 @@ function AppContent() {
     resetTimer();
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       clearTimeout(inactivityTimer);
       activityEvents.forEach(event => window.removeEventListener(event, resetTimer));
@@ -113,23 +121,28 @@ function SplashScreen() {
   );
 }
 
-
 export default function Home() {
-  const [showSplash, setShowSplash] = useState(Capacitor.isNativePlatform());
+  const [showSplash, setShowSplash] = useState(true);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
-    if (showSplash) {
+    // Only show splash screen on native platforms, and hide it after a delay.
+    // On web, don't show it at all.
+    const isNative = Capacitor.isNativePlatform();
+    if (isNative) {
+      setShowSplash(true);
       const timer = setTimeout(() => {
         setShowSplash(false);
       }, 2000); 
       return () => clearTimeout(timer);
+    } else {
+      setShowSplash(false);
     }
-  }, [showSplash]);
+  }, []);
 
   if (!isClient) {
-    // Render a static splash screen on the server to avoid layout shift
+    // Render a static splash screen on the server to avoid layout shift and hydration errors
     return <SplashScreen />;
   }
   
