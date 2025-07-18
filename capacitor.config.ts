@@ -5,6 +5,18 @@ const config: CapacitorConfig = {
   appName: 'amiroNEWS',
   webDir: 'out',
   bundledWebRuntime: false,
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 2000,
+      launchAutoHide: true,
+      backgroundColor: "#F0F8FF",
+      androidSplashResourceName: "splash",
+      androidScaleType: "CENTER_CROP",
+      splashFullScreen: true,
+      splashImmersive: true,
+      layoutName: "launch_screen",
+    },
+  },
 };
 
 export default config;

@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { WifiOff, Newspaper, Rocket } from 'lucide-react';
+import { WifiOff } from 'lucide-react';
 import Lottie from "lottie-react";
 import { Capacitor } from '@capacitor/core';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { SplashScreen as CapacitorSplashScreen } from '@capacitor/splash-screen';
 
 const AMIRONEWS_URL = 'https://amironews.com/';
 
@@ -139,6 +138,7 @@ export default function Home() {
     
     if (isNative) {
       setShowSplash(true);
+      CapacitorSplashScreen.hide(); // Hide the native splash screen and show the web one.
       const timer = setTimeout(() => {
         setShowSplash(false);
       }, 2000); 
