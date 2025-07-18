@@ -7,6 +7,9 @@ import Script from 'next/script';
 export const metadata: Metadata = {
   title: 'Amironews Reader',
   description: 'A simple reader for your favorite websites.',
+  icons: {
+    icon: '/icon.png',
+  },
 };
 
 export const viewport: Viewport = {
@@ -43,6 +46,18 @@ export default function RootLayout({
             OneSignal.push(function() {
               OneSignal.init({
                 appId: "3508a1ed-ec7c-45dc-8b41-a0652886dad4",
+                notifyButton: {
+                  enable: false,
+                },
+                welcomeNotification: {
+                  disable: true
+                },
+                notificationClickHandlerMatch: 'origin',
+                notificationClickHandlerAction: 'focus',
+                allowLocalhostAsSecureOrigin: true,
+                serviceWorkerParam: { scope: '/push/onesignal/' },
+                serviceWorkerPath: 'push/onesignal/OneSignalSDKWorker.js',
+                serviceWorkerUpdaterPath: 'push/onesignal/OneSignalSDKUpdaterWorker.js',
               });
             });
           `}
