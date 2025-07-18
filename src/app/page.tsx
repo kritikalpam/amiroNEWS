@@ -1,39 +1,23 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { WifiOff } from 'lucide-react';
+import { WifiOff, Newspaper, Rocket } from 'lucide-react';
 import Lottie from "lottie-react";
 import { Capacitor } from '@capacitor/core';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const AMIRONEWS_URL = 'https://amironews.com/';
+const STUDIO_URL = 'https://studio.firebase.google.com/studio-6936726665';
 
-function AppContent() {
-  const [isOnline, setIsOnline] = useState(true);
+function IframeView({ src }: { src: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsOnline(navigator.onLine);
-
-      const handleOnline = () => setIsOnline(true);
-      const handleOffline = () => setIsOnline(false);
-
-      window.addEventListener('online', handleOnline);
-      window.addEventListener('offline', handleOffline);
-
-      return () => {
-        window.removeEventListener('online', handleOnline);
-        window.removeEventListener('offline', handleOffline);
-      };
-    }
-  }, []);
 
   const refreshIframe = () => {
     if (iframeRef.current) {
-       setTimeout(() => {
+      setTimeout(() => {
         if (iframeRef.current) {
-          // To avoid caching issues, append a timestamp
-          const url = new URL(AMIRONEWS_URL);
+          const url = new URL(src);
           url.searchParams.set('t', Date.now().toString());
           iframeRef.current.src = url.toString();
         }
@@ -55,9 +39,7 @@ function AppContent() {
       inactivityTimer = setTimeout(refreshIframe, 15 * 60 * 1000); // 15 minutes
     };
 
-    const activityEvents: (keyof WindowEventMap)[] = [
-      'mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll'
-    ];
+    const activityEvents: (keyof WindowEventMap)[] = ['mousemove', 'mousedown', 'keypress', 'touchmove', 'scroll'];
     activityEvents.forEach(event => window.addEventListener(event, resetTimer));
     resetTimer();
 
@@ -65,6 +47,38 @@ function AppContent() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       clearTimeout(inactivityTimer);
       activityEvents.forEach(event => window.removeEventListener(event, resetTimer));
+    };
+  }, [src]);
+
+  return (
+    <iframe
+      ref={iframeRef}
+      src={src}
+      className="w-full h-full border-0"
+      sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+    />
+  );
+}
+
+
+function AppContent() {
+  const [isOnline, setIsOnline] = useState(true);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    if (typeof window !== 'undefined') {
+      setIsOnline(navigator.onLine);
+      window.addEventListener('online', handleOnline);
+      window.addEventListener('offline', handleOffline);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+      }
     };
   }, []);
 
@@ -76,18 +90,19 @@ function AppContent() {
           You are offline. Showing cached content.
         </div>
       )}
-      <main className="flex-1 overflow-auto bg-muted/20">
-        <div
-          className="w-full h-full animate-in fade-in-0 duration-500"
-        >
-          <iframe
-            ref={iframeRef}
-            src={AMIRONEWS_URL}
-            title="Amironews"
-            className="w-full h-full border-0"
-            sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-          />
-        </div>
+      <main className="flex-1 bg-background">
+         <Tabs defaultValue="news" className="w-full h-full flex flex-col">
+          <TabsList className="grid w-full grid-cols-2 rounded-none">
+            <TabsTrigger value="news" className="gap-2"><Newspaper className="h-4 w-4"/>Amironews</TabsTrigger>
+            <TabsTrigger value="studio" className="gap-2"><Rocket className="h-4 w-4"/>Studio</TabsTrigger>
+          </TabsList>
+          <TabsContent value="news" className="flex-1 overflow-auto">
+            <IframeView src={AMIRONEWS_URL} />
+          </TabsContent>
+          <TabsContent value="studio" className="flex-1 overflow-auto">
+            <IframeView src={STUDIO_URL} />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
@@ -115,7 +130,7 @@ function SplashScreen() {
         </div>
       </div>
       <div className="w-full bg-gray-200 h-1 absolute bottom-0">
-        <div className="bg-red-600 h-1 animate-loading-bar"></div>
+        <div className="bg-primary h-1 animate-loading-bar"></div>
       </div>
     </div>
   );
@@ -127,9 +142,13 @@ export default function Home() {
 
   useEffect(() => {
     setIsClient(true);
-    // Only show splash screen on native platforms, and hide it after a delay.
-    // On web, don't show it at all.
-    const isNative = Capacitor.isNativePlatform();
+    let isNative = false;
+    try {
+      isNative = Capacitor.isNativePlatform();
+    } catch (e) {
+      // Running in a non-capacitor environment
+    }
+    
     if (isNative) {
       setShowSplash(true);
       const timer = setTimeout(() => {
@@ -142,7 +161,6 @@ export default function Home() {
   }, []);
 
   if (!isClient) {
-    // Render a static splash screen on the server to avoid layout shift and hydration errors
     return <SplashScreen />;
   }
   
