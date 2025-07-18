@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const AMIRONEWS_URL = 'https://amironews.com/';
-const STUDIO_URL = 'https://studio.firebase.google.com/studio-6936726665';
 
 function IframeView({ src }: { src: string }) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -90,19 +89,8 @@ function AppContent() {
           You are offline. Showing cached content.
         </div>
       )}
-      <main className="flex-1 bg-background">
-         <Tabs defaultValue="news" className="w-full h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-2 rounded-none">
-            <TabsTrigger value="news" className="gap-2"><Newspaper className="h-4 w-4"/>Amironews</TabsTrigger>
-            <TabsTrigger value="studio" className="gap-2"><Rocket className="h-4 w-4"/>Studio</TabsTrigger>
-          </TabsList>
-          <TabsContent value="news" className="flex-1 overflow-auto">
-            <IframeView src={AMIRONEWS_URL} />
-          </TabsContent>
-          <TabsContent value="studio" className="flex-1 overflow-auto">
-            <IframeView src={STUDIO_URL} />
-          </TabsContent>
-        </Tabs>
+      <main className="flex-1 bg-background overflow-auto">
+        <IframeView src={AMIRONEWS_URL} />
       </main>
     </div>
   );
