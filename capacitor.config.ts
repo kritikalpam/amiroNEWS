@@ -15,6 +15,8 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: true,
       layoutName: "launch_screen",
+      useDialog: true,
+      iosSplashResourceName: "Splash",
     },
   },
 };

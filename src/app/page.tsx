@@ -129,14 +129,8 @@ export default function Home() {
 
   useEffect(() => {
     setIsClient(true);
-    let isNative = false;
-    try {
-      isNative = Capacitor.isNativePlatform();
-    } catch (e) {
-      // Running in a non-capacitor environment
-    }
     
-    if (isNative) {
+    if (Capacitor.isNativePlatform()) {
       setShowSplash(true);
       CapacitorSplashScreen.hide(); // Hide the native splash screen and show the web one.
       const timer = setTimeout(() => {
