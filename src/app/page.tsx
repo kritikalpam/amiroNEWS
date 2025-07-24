@@ -44,7 +44,7 @@ export default function Home() {
       <iframe
         ref={iframeRef}
         src="https://amironews.com/"
-        className="h-full w-full animate-in fade-in-0 duration-500 border-0"
+        className="h-full w-full animate-in fade-in-0 zoom-in-75 duration-500 border-0"
         title="Amironews Viewer"
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
       />
