@@ -9,11 +9,6 @@ export default function Home() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    // Simulate a 2-3 second splash screen as requested
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2500);
-
     // OneSignal Initialization
     window.OneSignal = window.OneSignal || [];
     window.OneSignal.push(function () {
@@ -31,22 +26,23 @@ export default function Home() {
         }
       });
     });
-
-    return () => clearTimeout(timer);
   }, []);
 
-  if (isLoading) {
-    return <SplashScreen />;
-  }
+  const handleIframeLoad = () => {
+    setIsLoading(false);
+  };
 
   return (
     <main className="h-screen w-screen overflow-hidden bg-background">
+      {isLoading && <SplashScreen />}
       <iframe
         ref={iframeRef}
         src="https://amironews.com/"
         className="h-full w-full animate-in fade-in-0 zoom-in-75 duration-500 border-0"
         title="Amironews Viewer"
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        onLoad={handleIframeLoad}
+        style={{ visibility: isLoading ? 'hidden' : 'visible' }}
       />
     </main>
   );
