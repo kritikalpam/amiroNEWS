@@ -12,6 +12,14 @@ export default function Home() {
       setIsLoading(false);
     }, 2500);
 
+    // OneSignal Initialization
+    window.OneSignal = window.OneSignal || [];
+    window.OneSignal.push(function () {
+      window.OneSignal.init({
+        appId: "3508a1ed-ec7c-45dc-8b41-a0652886dad4",
+      });
+    });
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -25,6 +33,7 @@ export default function Home() {
         src="https://amironews.com/"
         className="h-full w-full animate-in fade-in-0 duration-500 border-0"
         title="Amironews Viewer"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
       />
     </main>
   );

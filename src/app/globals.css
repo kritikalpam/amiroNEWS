@@ -43,7 +43,7 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
-    --background: 223 30% 10%;
+    --background: 0 0% 0%; /* Black */
     --foreground: 225 50% 90%;
     --card: 223 30% 10%;
     --card-foreground: 225 50% 90%;
@@ -84,5 +84,11 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  .dark .splash-screen {
+    background-color: #000000;
+  }
+  .splash-screen {
+    background-color: #FFFFFF;
   }
 }
