@@ -7,7 +7,7 @@ export function SplashScreen() {
       aria-label="Loading"
       role="status"
     >
-      <div className="relative w-48 md:w-56 overflow-hidden">
+      <div className="relative w-32 md:w-40 overflow-hidden">
         <Logo className="w-full" />
       </div>
       <div className="absolute bottom-0 left-0 h-1 w-full overflow-hidden">
