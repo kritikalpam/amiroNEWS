@@ -6,9 +6,21 @@ import { app } from "@/lib/firebase"; // Import Firebase
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isOffline, setIsOffline] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
+    // Set initial online status
+    if (typeof navigator !== 'undefined') {
+      setIsOffline(!navigator.onLine);
+    }
+
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
     // OneSignal Initialization
     window.OneSignal = window.OneSignal || [];
     window.OneSignal.push(function () {
@@ -26,6 +38,11 @@ export default function Home() {
         }
       });
     });
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, []);
 
   const handleIframeLoad = () => {
@@ -34,6 +51,13 @@ export default function Home() {
 
   return (
     <main className="h-screen w-screen overflow-hidden bg-background">
+      {isOffline && (
+        <div className="offline-banner">
+          <div className="offline-banner-text">
+            OFFLINE MODE OFFLINE MODE OFFLINE MODE OFFLINE MODE OFFLINE MODE
+          </div>
+        </div>
+      )}
       {isLoading && <SplashScreen />}
       <iframe
         ref={iframeRef}
