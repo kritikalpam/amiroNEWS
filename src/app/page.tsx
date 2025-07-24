@@ -9,6 +9,15 @@ export default function Home() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
+    // Set theme
+    const root = window.document.documentElement;
+    const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (isDarkMode) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    
     // Simulate a 2-3 second splash screen as requested
     const timer = setTimeout(() => {
       setIsLoading(false);
