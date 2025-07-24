@@ -50,7 +50,7 @@ export default function Home() {
   };
 
   return (
-    <main className="h-screen w-screen overflow-hidden bg-background">
+    <main className="h-screen w-screen overflow-hidden bg-background pt-safe-top">
       {isOffline && (
         <div className="offline-banner">
           <div className="offline-banner-text">
