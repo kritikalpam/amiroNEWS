@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SplashScreen } from "@/components/splash-screen";
 import { app } from "@/lib/firebase"; // Import Firebase
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     // Simulate a 2-3 second splash screen as requested
@@ -19,6 +20,16 @@ export default function Home() {
       window.OneSignal.init({
         appId: "3508a1ed-ec7c-45dc-8b41-a0652886dad4",
       });
+
+      // Redirect notification clicks to the iframe
+      window.OneSignal.on('notificationClick', function(event) {
+        if (event.notification.launchURL) {
+          event.preventDefault();
+          if (iframeRef.current) {
+            iframeRef.current.src = event.notification.launchURL;
+          }
+        }
+      });
     });
 
     return () => clearTimeout(timer);
@@ -31,6 +42,7 @@ export default function Home() {
   return (
     <main className="h-screen w-screen overflow-hidden bg-background">
       <iframe
+        ref={iframeRef}
         src="https://amironews.com/"
         className="h-full w-full animate-in fade-in-0 duration-500 border-0"
         title="Amironews Viewer"
