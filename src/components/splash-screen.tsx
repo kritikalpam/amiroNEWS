@@ -7,9 +7,11 @@ export function SplashScreen() {
       aria-label="Loading"
       role="status"
     >
-      <div className="relative w-64 md:w-80 overflow-hidden">
+      <div className="relative w-48 md:w-56 overflow-hidden">
         <Logo className="w-full" />
-        <div className="shine-effect"></div>
+      </div>
+      <div className="absolute bottom-0 left-0 h-1 w-full overflow-hidden">
+        <div className="loading-line"></div>
       </div>
     </div>
   );
