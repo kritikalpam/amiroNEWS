@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { SplashScreen } from "@/components/splash-screen";
+import { app } from "@/lib/firebase"; // Import Firebase
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
