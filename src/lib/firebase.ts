@@ -9,7 +9,7 @@ const firebaseConfig = {
   projectId: "amiro-news",
   storageBucket: "amiro-news.firebasestorage.app",
   messagingSenderId: "849105130428",
-  appId: "1:849105130428:web:c549277a3dfcd1860911b9"
+  appId: "1:849105130428:web:a4faa86e60fc7a660911b9"
 };
 
 // Initialize Firebase
