@@ -93,7 +93,7 @@ body {
       radial-gradient(ellipse at 80% 85%, rgba(0, 60, 220, 0.3) 0%, transparent 35%),
       radial-gradient(ellipse at 25% 60%, rgba(200, 20, 20, 0.6) 0%, transparent 50%),
       radial-gradient(ellipse at 15% 70%, rgba(220, 0, 0, 0.5) 0%, transparent 40%);
-    background-size: 200% 200%;
+    background-size: 100% 100%;
   }
   .dark .splash-screen.police-lights {
     background-color: #000;
@@ -162,7 +162,7 @@ body {
       background-position: 0% 0%;
     }
     100% {
-      background-position: -10% 10%;
+      background-position: 0% 0%;
     }
   }
 }
