@@ -37,10 +37,6 @@ export default function RootLayout({
             `,
           }}
         />
-        <Script
-          src="https://cdn.onesignal.com/sdks/OneSignalSDK.js"
-          strategy="afterInteractive"
-        />
       </head>
       <body className={`${inter.variable} font-body antialiased`}>{children}</body>
     </html>
