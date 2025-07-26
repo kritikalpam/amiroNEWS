@@ -87,13 +87,16 @@ body {
   }
   .splash-screen.police-lights {
     animation: police-lights-animation 20s infinite alternate linear;
-    background-color: #000;
+    background-color: #fff;
     background-image:
       radial-gradient(ellipse at 70% 80%, rgba(20, 80, 200, 0.4) 0%, transparent 40%),
       radial-gradient(ellipse at 80% 85%, rgba(0, 60, 220, 0.3) 0%, transparent 35%),
       radial-gradient(ellipse at 25% 60%, rgba(200, 20, 20, 0.6) 0%, transparent 50%),
       radial-gradient(ellipse at 15% 70%, rgba(220, 0, 0, 0.5) 0%, transparent 40%);
     background-size: 200% 200%;
+  }
+  .dark .splash-screen.police-lights {
+    background-color: #000;
   }
 }
 
