@@ -86,31 +86,11 @@ body {
     @apply bg-background text-foreground;
   }
   .splash-screen.police-lights {
-    background:
-      linear-gradient(to right, rgba(0, 123, 255, 0.1), rgba(255, 65, 54, 0.1)),
-      repeating-linear-gradient(
-        -45deg,
-        rgba(0, 123, 255, 0.3),
-        rgba(0, 123, 255, 0.3) 10px,
-        rgba(255, 65, 54, 0.3) 10px,
-        rgba(255, 65, 54, 0.3) 20px
-      );
-    background-size: 400% 400%;
-    animation: police-lights-animation 20s linear infinite;
+    background: linear-gradient(to right, hsl(var(--background)) 50%, #ffffff 50%);
   }
 
   .dark .splash-screen.police-lights {
-    background:
-      linear-gradient(to right, rgba(0, 30, 255, 0.2), rgba(255, 0, 0, 0.2)),
-      repeating-linear-gradient(
-        -45deg,
-        rgba(0, 30, 255, 0.5),
-        rgba(0, 30, 255, 0.5) 15px,
-        rgba(255, 0, 0, 0.5) 15px,
-        rgba(255, 0, 0, 0.5) 30px
-      );
-    background-size: 400% 400%;
-    animation: police-lights-animation 20s linear infinite;
+    background: linear-gradient(to right, hsl(var(--background)) 50%, hsl(0 0% 15%) 50%);
   }
 }
 
