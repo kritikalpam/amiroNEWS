@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "849105130428",
+    "project_id": "amiro-news",
+    "storage_bucket": "amiro-news.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849105130428:android:72e779669cdd76630911b9",
+        "android_client_info": {
+          "package_name": "com.amiro.news"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849105130428-6n88a6gcg7lrmsnnfg5t9et0dnh2g6pl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV-MfG9V14-Ao56h6so3D3sKJUDDkAsMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849105130428-6n88a6gcg7lrmsnnfg5t9et0dnh2g6pl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
