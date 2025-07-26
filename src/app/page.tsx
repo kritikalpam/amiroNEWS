@@ -22,22 +22,23 @@ export default function Home() {
     window.addEventListener('offline', handleOffline);
 
     // OneSignal Initialization
-    window.OneSignal = window.OneSignal || [];
-    window.OneSignal.push(function () {
-      window.OneSignal.init({
-        appId: "3508a1ed-ec7c-45dc-8b41-a0652886dad4",
-      });
+    if (typeof window !== 'undefined' && 'OneSignal' in window) {
+      window.OneSignal.push(function () {
+        window.OneSignal.init({
+          appId: "3508a1ed-ec7c-45dc-8b41-a0652886dad4",
+        });
 
-      // Redirect notification clicks to the iframe
-      window.OneSignal.on('notificationClick', function(event) {
-        if (event.notification.launchURL) {
-          event.preventDefault();
-          if (iframeRef.current) {
-            iframeRef.current.src = event.notification.launchURL;
+        // Redirect notification clicks to the iframe
+        window.OneSignal.on('notificationClick', function(event) {
+          if (event.notification.launchURL) {
+            event.preventDefault();
+            if (iframeRef.current) {
+              iframeRef.current.src = event.notification.launchURL;
+            }
           }
-        }
+        });
       });
-    });
+    }
 
     // Use requestIdleCallback to load iframe without blocking main thread
     if ('requestIdleCallback' in window) {
