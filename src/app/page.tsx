@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
+import OneSignal from 'react-onesignal';
 import { SplashScreen } from "@/components/splash-screen";
-import { app } from "@/lib/firebase"; // Import Firebase
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
   const [isOffline, setIsOffline] = useState(false);
+  const [iframeSrc, setIframeSrc] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    // Set initial online status
+    OneSignal.init({ appId: '9e73b5b9-166a-4fa9-93db-05f23714e41b' });
+
     if (typeof navigator !== 'undefined') {
       setIsOffline(!navigator.onLine);
     }
@@ -23,17 +25,21 @@ export default function Home() {
     const splashTimer = setTimeout(() => {
       setShowSplash(false);
     }, 2000);
+    
+    // Set the iframe source after a delay to avoid blocking the main thread
+    const iframeTimer = setTimeout(() => {
+      setIframeSrc("https://amironews.com/");
+    }, 100);
 
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       clearTimeout(splashTimer);
+      clearTimeout(iframeTimer);
     };
   }, []);
 
   const handleIframeLoad = () => {
-    // We can still keep this to hide splash if iframe loads faster than timeout
-    // but the primary mechanism is now the timer.
     setShowSplash(false);
   };
 
@@ -48,14 +54,16 @@ export default function Home() {
         </div>
       )}
       {showSplash && <SplashScreen />}
-      <iframe
-        src="https://amironews.com/"
-        className="h-full w-full border-0 transition-opacity duration-500"
-        title="Amironews Viewer"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-        onLoad={handleIframeLoad}
-        style={{ opacity: showSplash ? 0 : 1 }}
-      />
+      {iframeSrc && (
+        <iframe
+          src={iframeSrc}
+          className="h-full w-full border-0 transition-opacity duration-500"
+          title="Amironews Viewer"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          onLoad={handleIframeLoad}
+          style={{ opacity: showSplash ? 0 : 1 }}
+        />
+      )}
     </main>
   );
 }
