@@ -7,7 +7,6 @@ import { app } from "@/lib/firebase"; // Import Firebase
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
   const [isOffline, setIsOffline] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     // Set initial online status
@@ -25,25 +24,12 @@ export default function Home() {
       setShowSplash(false);
     }, 2000);
 
-    // Use requestIdleCallback to load iframe without blocking main thread
-    if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(loadIframe);
-    } else {
-      setTimeout(loadIframe, 1);
-    }
-
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       clearTimeout(splashTimer);
     };
   }, []);
-
-  const loadIframe = () => {
-    if (iframeRef.current && !iframeRef.current.src) {
-        iframeRef.current.src = "https://amironews.com/";
-    }
-  }
 
   const handleIframeLoad = () => {
     // We can still keep this to hide splash if iframe loads faster than timeout
@@ -63,7 +49,6 @@ export default function Home() {
       )}
       {showSplash && <SplashScreen />}
       <iframe
-        ref={iframeRef}
         src="https://amironews.com/"
         className="h-full w-full border-0 transition-opacity duration-500"
         title="Amironews Viewer"
