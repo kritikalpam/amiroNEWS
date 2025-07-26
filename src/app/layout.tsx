@@ -1,13 +1,11 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import Script from 'next/script';
-import { PT_Sans } from 'next/font/google'
+import { Inter } from 'next/font/google'
 
-const ptSans = PT_Sans({
+const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-pt-sans',
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -23,6 +21,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -42,7 +42,7 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className={`${ptSans.variable} font-body antialiased`}>{children}</body>
+      <body className={`${inter.variable} font-body antialiased`}>{children}</body>
     </html>
   );
 }

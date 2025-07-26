@@ -5,7 +5,7 @@ import { SplashScreen } from "@/components/splash-screen";
 import { app } from "@/lib/firebase"; // Import Firebase
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
   const [isOffline, setIsOffline] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -39,14 +39,30 @@ export default function Home() {
       });
     });
 
+    // Use requestIdleCallback to load iframe without blocking main thread
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(loadIframe);
+    } else {
+      setTimeout(loadIframe, 1);
+    }
+
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
   }, []);
 
+  const loadIframe = () => {
+    if (iframeRef.current && !iframeRef.current.src) {
+        iframeRef.current.src = "https://amironews.com/";
+    }
+  }
+
   const handleIframeLoad = () => {
-    setIsLoading(false);
+    // A small delay to perceive the transition
+    setTimeout(() => {
+      setShowSplash(false);
+    }, 500);
   };
 
   return (
@@ -58,15 +74,14 @@ export default function Home() {
           </div>
         </div>
       )}
-      {isLoading && <SplashScreen />}
+      {showSplash && <SplashScreen />}
       <iframe
         ref={iframeRef}
-        src="https://amironews.com/"
-        className="h-full w-full animate-in fade-in-0 zoom-in-75 duration-500 border-0"
+        className="h-full w-full border-0 transition-opacity duration-500"
         title="Amironews Viewer"
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
         onLoad={handleIframeLoad}
-        style={{ visibility: isLoading ? 'hidden' : 'visible' }}
+        style={{ opacity: showSplash ? 0 : 1 }}
       />
     </main>
   );
