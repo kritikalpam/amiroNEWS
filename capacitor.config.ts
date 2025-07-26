@@ -7,8 +7,6 @@ const config: CapacitorConfig = {
   bundledWebRuntime: false,
   plugins: {
     OneSignal: {
-      // Prevents the default behavior of opening URLs in an external browser
-      // when a notification is clicked.
       disableConsentRequirement: false,
       canRequestPopupForPushNotifications: true,
       launchURLsInApp: true,
