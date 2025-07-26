@@ -86,7 +86,7 @@ body {
     @apply bg-background text-foreground;
   }
   .splash-screen.police-lights {
-    animation: police-lights-animation 20s infinite alternate linear;
+    animation: police-lights-animation 2s infinite alternate linear;
     background-color: #fff;
     background-image:
       radial-gradient(ellipse at 70% 80%, rgba(20, 80, 200, 0.2) 0%, transparent 40%),

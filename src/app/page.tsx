@@ -59,10 +59,7 @@ export default function Home() {
   }
 
   const handleIframeLoad = () => {
-    // A small delay to perceive the transition
-    setTimeout(() => {
-      setShowSplash(false);
-    }, 500);
+    setShowSplash(false);
   };
 
   return (
