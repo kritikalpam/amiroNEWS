@@ -21,24 +21,9 @@ export default function Home() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // OneSignal Initialization
-    if (typeof window !== 'undefined' && 'OneSignal' in window) {
-      window.OneSignal.push(function () {
-        window.OneSignal.init({
-          appId: "3508a1ed-ec-7c-45dc-8b41-a0652886dad4",
-        });
-
-        // Redirect notification clicks to the iframe
-        window.OneSignal.on('notificationClick', function(event) {
-          if (event.notification.launchURL) {
-            event.preventDefault();
-            if (iframeRef.current) {
-              iframeRef.current.src = event.notification.launchURL;
-            }
-          }
-        });
-      });
-    }
+    const splashTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2000);
 
     // Use requestIdleCallback to load iframe without blocking main thread
     if ('requestIdleCallback' in window) {
@@ -46,10 +31,6 @@ export default function Home() {
     } else {
       setTimeout(loadIframe, 1);
     }
-    
-    const splashTimer = setTimeout(() => {
-        setShowSplash(false);
-    }, 2000);
 
     return () => {
       window.removeEventListener('online', handleOnline);
@@ -72,6 +53,7 @@ export default function Home() {
 
   return (
     <main className="h-screen w-screen overflow-hidden bg-background pt-safe-top">
+       <div className="loading-line"></div>
       {isOffline && (
         <div className="offline-banner">
           <div className="offline-banner-text">
@@ -82,6 +64,7 @@ export default function Home() {
       {showSplash && <SplashScreen />}
       <iframe
         ref={iframeRef}
+        src="https://amironews.com/"
         className="h-full w-full border-0 transition-opacity duration-500"
         title="Amironews Viewer"
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
