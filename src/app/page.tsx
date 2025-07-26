@@ -25,7 +25,7 @@ export default function Home() {
     if (typeof window !== 'undefined' && 'OneSignal' in window) {
       window.OneSignal.push(function () {
         window.OneSignal.init({
-          appId: "3508a1ed-ec7c-45dc-8b41-a0652886dad4",
+          appId: "3508a1ed-ec-7c-45dc-8b41-a0652886dad4",
         });
 
         // Redirect notification clicks to the iframe
@@ -46,10 +46,15 @@ export default function Home() {
     } else {
       setTimeout(loadIframe, 1);
     }
+    
+    const splashTimer = setTimeout(() => {
+        setShowSplash(false);
+    }, 2000);
 
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      clearTimeout(splashTimer);
     };
   }, []);
 
@@ -60,6 +65,8 @@ export default function Home() {
   }
 
   const handleIframeLoad = () => {
+    // We can still keep this to hide splash if iframe loads faster than timeout
+    // but the primary mechanism is now the timer.
     setShowSplash(false);
   };
 
