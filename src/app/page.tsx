@@ -53,7 +53,7 @@ export default function Home() {
 
   return (
     <main className="h-screen w-screen overflow-hidden bg-background pt-safe-top">
-       <div className="loading-line"></div>
+      {showSplash && <div className="loading-line"></div>}
       {isOffline && (
         <div className="offline-banner">
           <div className="offline-banner-text">
