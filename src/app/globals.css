@@ -95,8 +95,8 @@ body {
         rgba(255, 65, 54, 0.3) 10px,
         rgba(255, 65, 54, 0.3) 20px
       );
-    background-size: 200% 200%;
-    animation: police-lights-animation 10s linear infinite;
+    background-size: 400% 400%;
+    animation: police-lights-animation 20s linear infinite;
   }
 
   .dark .splash-screen.police-lights {
@@ -109,8 +109,8 @@ body {
         rgba(255, 0, 0, 0.5) 15px,
         rgba(255, 0, 0, 0.5) 30px
       );
-    background-size: 200% 200%;
-    animation: police-lights-animation 10s linear infinite;
+    background-size: 400% 400%;
+    animation: police-lights-animation 20s linear infinite;
   }
 }
 
@@ -176,7 +176,7 @@ body {
       background-position: 0% 0%;
     }
     100% {
-      background-position: 200% 200%;
+      background-position: 400% 400%;
     }
   }
 }
