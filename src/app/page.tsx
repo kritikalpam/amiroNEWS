@@ -47,14 +47,16 @@ export default function Home() {
   const [pullDistance, setPullDistance] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const handleRefresh = useCallback(() => {
-    if (navigator.onLine) {
+  const handleRefresh = useCallback((forceOnline = false) => {
+    if (navigator.onLine || forceOnline) {
       setIsLoading(true);
       setShowOfflineIndicator(false);
       // Clear srcDoc to ensure the src is loaded
       setIframeSrcDoc(undefined); 
       setIframeSrc(`https://amironews.com/?t=${new Date().getTime()}`);
       fetchAndCacheWebsite();
+    } else {
+      loadOfflineContent();
     }
   }, []);
 
@@ -79,14 +81,14 @@ export default function Home() {
     setIsOffline(!online);
 
     if (online) {
-      handleRefresh();
+      handleRefresh(true);
     } else {
       loadOfflineContent();
     }
     
     const handleOnline = () => {
       setIsOffline(false);
-      handleRefresh();
+      handleRefresh(true);
     };
     
     const handleOffline = () => {
@@ -113,7 +115,9 @@ export default function Home() {
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
-    if (window.scrollY === 0 && !isLoading) {
+    // Only allow pull-to-refresh if the iframe content is scrolled to the top
+    const iframeWindow = iframeRef.current?.contentWindow;
+    if (iframeWindow && iframeWindow.scrollY === 0 && !isLoading) {
       touchStartRef.current = e.touches[0].clientY;
       setPulling(true);
     }
@@ -123,6 +127,8 @@ export default function Home() {
     if (!pulling || touchStartRef.current === null) return;
     const distance = e.touches[0].clientY - touchStartRef.current;
     if (distance > 0) {
+      // Prevent default to avoid browser's overscroll behavior
+      e.preventDefault(); 
       setPullDistance(Math.min(distance, PULL_THRESHOLD * 1.5));
     }
   };
@@ -156,7 +162,7 @@ export default function Home() {
        {showOfflineIndicator && (
         <div className="flex items-center justify-center gap-2 bg-muted p-2 text-center text-sm text-muted-foreground">
           <WifiOff className="h-4 w-4" />
-          You are in offline mode.
+          You are in offline mode. Some content may be unavailable.
         </div>
       )}
       <div
