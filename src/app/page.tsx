@@ -6,17 +6,18 @@ import { ArrowDown, WifiOff } from "lucide-react";
 
 const PULL_THRESHOLD = 70; // 70px
 const CACHE_KEY = "amironews-offline-cache";
+const CORS_PROXY_URL = "https://api.allorigins.win/raw?url=";
 
 interface CachedContent {
   html: string;
   timestamp: number;
 }
 
-async function fetchAndCacheWebsite() {
+async function fetchAndCacheWebsite(url: string) {
   try {
-    const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent("https://amironews.com/")}`);
+    const response = await fetch(`${CORS_PROXY_URL}${encodeURIComponent(url)}`);
     if (!response.ok) {
-      throw new Error('Failed to fetch website content');
+      throw new Error(`Failed to fetch website content: ${response.statusText}`);
     }
     const html = await response.text();
     const cache: CachedContent = { html, timestamp: Date.now() };
@@ -33,7 +34,7 @@ export default function Home() {
   const [isOffline, setIsOffline] = useState(false);
   const [iframeSrc, setIframeSrc] = useState<string | undefined>(undefined);
   const [iframeSrcDoc, setIframeSrcDoc] = useState<string | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start loading initially
   const [showOfflineIndicator, setShowOfflineIndicator] = useState(false);
 
   const touchStartRef = useRef<number | null>(null);
@@ -41,19 +42,8 @@ export default function Home() {
   const [pullDistance, setPullDistance] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const handleRefresh = useCallback((forceOnline = false) => {
-    if (navigator.onLine || forceOnline) {
-      setIsLoading(true);
-      setShowOfflineIndicator(false);
-      setIframeSrcDoc(undefined); 
-      setIframeSrc(`https://amironews.com/?t=${new Date().getTime()}`);
-      fetchAndCacheWebsite();
-    } else {
-      loadOfflineContent();
-    }
-  }, []);
-
-  const loadOfflineContent = useCallback(() => {
+  const loadOfflineContent = useCallback(async () => {
+    setIsLoading(true);
     const cachedData = localStorage.getItem(CACHE_KEY);
     if (cachedData) {
       const { html } = JSON.parse(cachedData) as CachedContent;
@@ -61,31 +51,46 @@ export default function Home() {
       setIframeSrcDoc(html);
       setShowOfflineIndicator(true);
     } else {
+      // If no cache, we are truly offline with no backup
       setIframeSrc(undefined);
-      setIframeSrcDoc(undefined);
+      setIframeSrcDoc(undefined); 
     }
     setIsLoading(false);
   }, []);
 
-  useEffect(() => {
-    const online = navigator.onLine;
-    setIsOffline(!online);
+  const loadOnlineContent = useCallback(() => {
+    setIsLoading(true);
+    setShowOfflineIndicator(false);
+    setIframeSrcDoc(undefined); 
+    // Use timestamp to break browser cache and ensure fresh load
+    setIframeSrc(`https://amironews.com/?t=${new Date().getTime()}`);
+    // Start caching in the background without waiting for it
+    fetchAndCacheWebsite("https://amironews.com/");
+  }, []);
 
-    if (online) {
-      handleRefresh(true);
-    } else {
-      loadOfflineContent();
-    }
-    
+
+  useEffect(() => {
     const handleOnline = () => {
+      console.log("Status: Online");
       setIsOffline(false);
-      handleRefresh(true);
+      loadOnlineContent();
     };
     
     const handleOffline = () => {
+      console.log("Status: Offline");
       setIsOffline(true);
       loadOfflineContent();
     };
+
+    // Initial check
+    if (typeof window !== "undefined") {
+      setIsOffline(!navigator.onLine);
+      if (navigator.onLine) {
+        handleOnline();
+      } else {
+        handleOffline();
+      }
+    }
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -94,13 +99,23 @@ export default function Home() {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, [handleRefresh, loadOfflineContent]);
+  }, [loadOnlineContent, loadOfflineContent]);
+
+  const handleRefresh = useCallback(() => {
+    if (navigator.onLine) {
+      loadOnlineContent();
+    } else {
+      // In offline mode, a refresh doesn't do much, but we can signal it's done.
+      setIsLoading(false);
+    }
+  }, [loadOnlineContent]);
 
   const handleIframeLoad = () => {
     setIsLoading(false);
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
+    // Allow pull-to-refresh only if the iframe is scrolled to the top
     const iframeWindow = iframeRef.current?.contentWindow;
     if (iframeWindow && iframeWindow.scrollY === 0 && !isLoading) {
       touchStartRef.current = e.touches[0].clientY;
@@ -111,7 +126,7 @@ export default function Home() {
   const handleTouchMove = (e: React.TouchEvent<HTMLElement>) => {
     if (!pulling || touchStartRef.current === null) return;
     const distance = e.touches[0].clientY - touchStartRef.current;
-    if (distance > 0) {
+    if (distance > 0) { // Only on pull down
       e.preventDefault(); 
       setPullDistance(Math.min(distance, PULL_THRESHOLD * 1.5));
     }
@@ -119,6 +134,7 @@ export default function Home() {
 
   const handleTouchEnd = () => {
     if (pullDistance > PULL_THRESHOLD) {
+      setIsLoading(true);
       handleRefresh();
     }
     touchStartRef.current = null;
@@ -195,7 +211,7 @@ export default function Home() {
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
         onLoad={handleIframeLoad}
         style={{
-          opacity: isLoading ? 0.5 : 1,
+          opacity: isLoading && !iframeSrcDoc ? 0.5 : 1, // only dim if it's a fresh online load
           transition: 'opacity 0.3s, padding-top 0.3s',
           height: showOfflineIndicator ? 'calc(100% - 2.5rem)' : '100%',
           paddingTop: 'env(safe-area-inset-top)',
