@@ -136,4 +136,7 @@ body {
       transform-origin: right;
     }
   }
+  .pull-to-refresh-indicator {
+    transition: opacity 0.3s ease-in-out;
+  }
 }
