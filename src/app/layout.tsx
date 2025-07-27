@@ -1,6 +1,5 @@
 import type {Metadata} from 'next';
 import './globals.css';
-import Script from 'next/script';
 import { Inter } from 'next/font/google'
 
 const inter = Inter({
@@ -21,8 +20,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

@@ -7,7 +7,6 @@ import { RefreshCw, ArrowDown, WifiOff } from "lucide-react";
 
 const PULL_THRESHOLD = 70; // 70px
 const CACHE_KEY = "amironews-offline-cache";
-const CACHE_EXPIRATION_MS = 15 * 60 * 1000; // 15 minutes
 
 interface CachedContent {
   html: string;
@@ -16,9 +15,6 @@ interface CachedContent {
 
 async function fetchAndCacheWebsite() {
   try {
-    // We use a proxy to bypass CORS issues in the browser environment.
-    // NOTE: This is a simplified approach. A real-world solution might
-    // require a dedicated backend proxy. For this example, we'll use a public one.
     const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent("https://amironews.com/")}`);
     if (!response.ok) {
       throw new Error('Failed to fetch website content');
@@ -51,7 +47,6 @@ export default function Home() {
     if (navigator.onLine || forceOnline) {
       setIsLoading(true);
       setShowOfflineIndicator(false);
-      // Clear srcDoc to ensure the src is loaded
       setIframeSrcDoc(undefined); 
       setIframeSrc(`https://amironews.com/?t=${new Date().getTime()}`);
       fetchAndCacheWebsite();
@@ -64,14 +59,14 @@ export default function Home() {
     const cachedData = localStorage.getItem(CACHE_KEY);
     if (cachedData) {
       const { html } = JSON.parse(cachedData) as CachedContent;
-      // Use srcDoc to display the cached HTML
       setIframeSrc(undefined);
       setIframeSrcDoc(html);
       setShowOfflineIndicator(true);
+      setShowSplash(false);
     } else {
-      // If no cache, show the full offline screen
       setIframeSrc(undefined);
       setIframeSrcDoc(undefined);
+      setShowSplash(false); // Hide splash to show offline screen
     }
     setIsLoading(false);
   }, []);
@@ -99,23 +94,24 @@ export default function Home() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    const splashTimer = setTimeout(() => {
+    // Fallback to hide splash screen after 5 seconds
+    const splashFallbackTimer = setTimeout(() => {
       setShowSplash(false);
-    }, 2000);
+    }, 5000);
 
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
-      clearTimeout(splashTimer);
+      clearTimeout(splashFallbackTimer);
     };
   }, [handleRefresh, loadOfflineContent]);
 
   const handleIframeLoad = () => {
     setIsLoading(false);
+    setShowSplash(false);
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
-    // Only allow pull-to-refresh if the iframe content is scrolled to the top
     const iframeWindow = iframeRef.current?.contentWindow;
     if (iframeWindow && iframeWindow.scrollY === 0 && !isLoading) {
       touchStartRef.current = e.touches[0].clientY;
@@ -127,7 +123,6 @@ export default function Home() {
     if (!pulling || touchStartRef.current === null) return;
     const distance = e.touches[0].clientY - touchStartRef.current;
     if (distance > 0) {
-      // Prevent default to avoid browser's overscroll behavior
       e.preventDefault(); 
       setPullDistance(Math.min(distance, PULL_THRESHOLD * 1.5));
     }
@@ -146,7 +141,6 @@ export default function Home() {
     return <SplashScreen />;
   }
 
-  // If offline and no cached content exists, show the full offline screen.
   if (isOffline && !iframeSrcDoc) {
     return <OfflineScreen />;
   }
