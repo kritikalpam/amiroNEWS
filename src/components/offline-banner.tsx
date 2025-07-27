@@ -1,5 +1,3 @@
-import { WifiOff } from "lucide-react";
-
 export function OfflineBanner() {
   return (
     <div
@@ -7,10 +5,7 @@ export function OfflineBanner() {
       style={{ paddingTop: `env(safe-area-inset-top)` }}
       role="status"
     >
-      <div className="flex items-center gap-2">
-        <WifiOff className="h-4 w-4" />
-        <p className="text-sm font-medium">You are offline</p>
-      </div>
+      <p className="animate-flash text-sm font-semibold tracking-wider">OFFLINE</p>
     </div>
   );
 }
