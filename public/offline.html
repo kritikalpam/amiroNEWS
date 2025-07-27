@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - amiroNEWS</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #1f2937;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #000000;
+                color: #e5e7eb;
+            }
+            .logo circle:nth-child(2) {
+                fill: #111827;
+            }
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo {
+            width: 8rem;
+        }
+        h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        p {
+            max-width: 320px;
+            color: #6b7280;
+        }
+        @media (prefers-color-scheme: dark) {
+            p {
+                color: #9ca3af;
+            }
+        }
+        .icon {
+            width: 4rem;
+            height: 4rem;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" x2="12.01" y1="20" y2="20"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+        <svg class="logo" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+            <title>Amironews Logo</title>
+            <circle fill="#2C417A" r="128" cy="128" cx="128"></circle>
+            <circle fill="#FFFFFF" r="100" cy="128" cx="128"></circle>
+            <circle fill="#A93232" r="28" cy="128" cx="128"></circle>
+        </svg>
+        <h1>You are offline</h1>
+        <p>No cached content is available. Please connect to the internet to get the latest news from Amironews.</p>
+    </div>
+</body>
+</html>
