@@ -5,9 +5,6 @@ import { ArrowDown } from "lucide-react";
 import { OfflineScreen } from "@/components/offline-screen";
 
 const PULL_THRESHOLD = 70;
-const CACHE_KEY = "amironews-offline-cache";
-const CACHE_TIMESTAMP_KEY = "amironews-cache-timestamp";
-const CACHE_EXPIRATION_MS = 15 * 60 * 1000; // 15 minutes
 
 export default function Home() {
   const [isOffline, setIsOffline] = useState(false);
@@ -17,68 +14,15 @@ export default function Home() {
   const [pulling, setPulling] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
 
-  const fetchAndCacheContent = useCallback(async () => {
-    if (navigator.onLine) {
-      try {
-        console.log("Starting to fetch and cache content...");
-        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent("https://amironews.com")}`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const html = await response.text();
-        localStorage.setItem(CACHE_KEY, html);
-        localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
-        console.log("Content cached successfully.");
-        return html;
-      } catch (error) {
-        console.error("Failed to fetch and cache content:", error);
-        return null;
-      }
-    }
-    return null;
-  }, []);
-
-  const loadContent = useCallback(() => {
-    if (navigator.onLine) {
-      if (iframeRef.current) {
-        iframeRef.current.src = "https://amironews.com";
-      }
-
-      const cachedTimestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
-      const isCacheExpired = !cachedTimestamp || (Date.now() - parseInt(cachedTimestamp, 10) > CACHE_EXPIRATION_MS);
-
-      if (isCacheExpired) {
-        // Fetch and cache in the background without blocking
-        fetchAndCacheContent();
-      }
-    } else {
-      const cachedContent = localStorage.getItem(CACHE_KEY);
-      if (iframeRef.current) {
-        if (cachedContent) {
-          iframeRef.current.srcdoc = cachedContent;
-        } else {
-          // If there's no cached content, show the offline screen.
-          // This relies on the check in the main return block.
-        }
-      }
-      setIsOffline(true);
-    }
-  }, [fetchAndCacheContent]);
-  
-  const handleRefresh = useCallback(async () => {
+  const handleRefresh = useCallback(() => {
     if (navigator.onLine) {
       if (iframeRef.current) {
         // To force a reload of the iframe, we can change its src.
         // Appending a timestamp is a common trick.
         iframeRef.current.src = `https://amironews.com?t=${Date.now()}`;
       }
-      // Also trigger a background cache update
-      fetchAndCacheContent();
-    } else {
-      // In offline mode, a refresh might mean trying to load from cache again.
-      loadContent();
     }
-  }, [loadContent, fetchAndCacheContent]);
+  }, []);
 
   useEffect(() => {
     const onlineHandler = () => {
@@ -87,7 +31,6 @@ export default function Home() {
     };
     const offlineHandler = () => {
       setIsOffline(true);
-      loadContent(); // Load from cache or show offline screen
     };
     
     window.addEventListener('online', onlineHandler);
@@ -97,13 +40,15 @@ export default function Home() {
       setIsOffline(!navigator.onLine);
     }
     
-    loadContent();
+    if (navigator.onLine && iframeRef.current) {
+        iframeRef.current.src = "https://amironews.com";
+    }
 
     return () => {
       window.removeEventListener('online', onlineHandler);
       window.removeEventListener('offline', offlineHandler);
     };
-  }, [handleRefresh, loadContent]);
+  }, [handleRefresh]);
 
   const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
     if (iframeRef.current?.contentWindow?.scrollY === 0) {
@@ -133,6 +78,10 @@ export default function Home() {
     setPullDistance(0);
   };
   
+  if (isOffline) {
+    return <OfflineScreen />;
+  }
+  
   return (
     <main
       className="h-screen w-screen overflow-hidden bg-background"
@@ -141,8 +90,6 @@ export default function Home() {
       onTouchEnd={handleTouchEnd}
       style={{ touchAction: 'pan-y' }}
     >
-      {isOffline && !localStorage.getItem(CACHE_KEY) && <OfflineScreen />}
-      
       <div
         className="pull-to-refresh-indicator absolute top-0 left-0 right-0 z-10 flex flex-col items-center justify-center text-center text-muted-foreground transition-all duration-200"
         style={{
@@ -180,12 +127,12 @@ export default function Home() {
       
        <iframe
           ref={iframeRef}
+          src="https://amironews.com"
           className="h-full w-full border-0"
           title="Amironews Viewer"
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
           style={{
             paddingTop: 'env(safe-area-inset-top)',
-            visibility: isOffline && !localStorage.getItem(CACHE_KEY) ? 'hidden' : 'visible'
           }}
         />
     </main>
