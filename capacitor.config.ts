@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.amiro.news',
-  appName: 'amiroNEWS',
+  appName: 'amiroNEWS bita 2',
   webDir: 'out',
   bundledWebRuntime: false,
   plugins: {

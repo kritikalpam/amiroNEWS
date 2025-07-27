@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Amironews Viewer',
+  title: 'amiroNEWS bita 2',
   description: 'A simple news webview app for amironews.com',
 };
 
