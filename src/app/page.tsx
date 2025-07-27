@@ -196,9 +196,7 @@ export default function Home() {
               />
             </svg>
           ) : (
-            <div className="flex items-center gap-2 rounded-full bg-card p-2 shadow-md">
-              <ArrowDown className={`h-4 w-4 transition-transform ${pullDistance > PULL_THRESHOLD ? 'rotate-180' : ''}`} />
-            </div>
+            <ArrowDown className={`h-6 w-6 transition-transform ${pullDistance > PULL_THRESHOLD ? 'rotate-180' : ''}`} />
           )}
         </div>
       </div>
