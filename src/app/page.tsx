@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowDown } from "lucide-react";
+import { SplashScreen } from "@/components/splash-screen";
 import { OfflineScreen } from "@/components/offline-screen";
+import { ArrowDown } from "lucide-react";
 
 const PULL_THRESHOLD = 70;
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
   const [isOffline, setIsOffline] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -17,7 +19,7 @@ export default function Home() {
   const handleRefresh = useCallback(() => {
     if (navigator.onLine) {
       if (iframeRef.current) {
-        // To force a reload of the iframe, we can change its src by appending a timestamp.
+        setLoading(true);
         iframeRef.current.src = `https://amironews.com?t=${Date.now()}`;
       }
     }
@@ -31,17 +33,18 @@ export default function Home() {
 
     const handleOffline = () => {
       setIsOffline(true);
+      setLoading(false); // No need to show loader if offline
     };
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
     // Set initial online status
-    setIsOffline(!navigator.onLine);
-    
-    // Set initial iframe src if online
-    if (navigator.onLine && iframeRef.current) {
-        iframeRef.current.src = "https://amironews.com";
+    if (typeof navigator.onLine === 'boolean') {
+      setIsOffline(!navigator.onLine);
+      if(!navigator.onLine) {
+        setLoading(false);
+      }
     }
 
     return () => {
@@ -77,7 +80,7 @@ export default function Home() {
     setPulling(false);
     setPullDistance(0);
   };
-  
+
   if (isOffline) {
     return <OfflineScreen />;
   }
@@ -90,6 +93,7 @@ export default function Home() {
       onTouchEnd={handleTouchEnd}
       style={{ touchAction: 'pan-y' }}
     >
+      <SplashScreen isVisible={loading} />
       <div
         className="pull-to-refresh-indicator absolute top-0 left-0 right-0 z-10 flex flex-col items-center justify-center text-center text-muted-foreground transition-all duration-200"
         style={{
@@ -128,9 +132,10 @@ export default function Home() {
        <iframe
           ref={iframeRef}
           src="https://amironews.com"
-          className="h-full w-full border-0"
+          className={`h-full w-full border-0 transition-opacity duration-500 ${loading ? 'opacity-0' : 'opacity-100'}`}
           title="Amironews Viewer"
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          onLoad={() => setLoading(false)}
           style={{
             paddingTop: 'env(safe-area-inset-top)',
           }}
