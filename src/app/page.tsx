@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowDown, RefreshCw } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { OfflineScreen } from "@/components/offline-screen";
 
 const PULL_THRESHOLD = 70;
@@ -57,9 +57,8 @@ export default function Home() {
         if (cachedContent) {
           iframeRef.current.srcdoc = cachedContent;
         } else {
-          // If there's no cached content, load a dedicated offline page.
-          // This assumes you have an offline.html in your public folder.
-          iframeRef.current.src = "/offline.html"; 
+          // If there's no cached content, show the offline screen.
+          // This relies on the check in the main return block.
         }
       }
       setIsOffline(true);
@@ -76,6 +75,7 @@ export default function Home() {
       // Also trigger a background cache update
       fetchAndCacheContent();
     } else {
+      // In offline mode, a refresh might mean trying to load from cache again.
       loadContent();
     }
   }, [loadContent, fetchAndCacheContent]);
@@ -83,11 +83,11 @@ export default function Home() {
   useEffect(() => {
     const onlineHandler = () => {
       setIsOffline(false);
-      handleRefresh();
+      handleRefresh(); // Try to refresh content when coming online
     };
     const offlineHandler = () => {
       setIsOffline(true);
-      loadContent();
+      loadContent(); // Load from cache or show offline screen
     };
     
     window.addEventListener('online', onlineHandler);
@@ -103,10 +103,9 @@ export default function Home() {
       window.removeEventListener('online', onlineHandler);
       window.removeEventListener('offline', offlineHandler);
     };
-  }, []);
+  }, [handleRefresh, loadContent]);
 
   const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
-    // Only track pulls if the iframe content is scrolled to the top
     if (iframeRef.current?.contentWindow?.scrollY === 0) {
       touchStartRef.current = e.touches[0].clientY;
       setPulling(true);
@@ -118,7 +117,6 @@ export default function Home() {
 
     const distance = e.touches[0].clientY - touchStartRef.current;
     if (distance > 0) {
-      // Prevent the browser's default pull-to-refresh action
       if(iframeRef.current?.contentWindow?.scrollY === 0) {
           e.preventDefault(); 
       }
@@ -141,16 +139,14 @@ export default function Home() {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      style={{ touchAction: 'pan-y' }} // Allow vertical scrolling
+      style={{ touchAction: 'pan-y' }}
     >
       {isOffline && !localStorage.getItem(CACHE_KEY) && <OfflineScreen />}
       
-      {/* Pull to refresh indicator */}
       <div
         className="pull-to-refresh-indicator absolute top-0 left-0 right-0 z-10 flex flex-col items-center justify-center text-center text-muted-foreground transition-all duration-200"
         style={{
           opacity: Math.min(pullDistance / PULL_THRESHOLD, 1),
-          // Move the indicator down as the user pulls
           transform: `translateY(${Math.min(pullDistance, PULL_THRESHOLD)}px) translateY(-100%)`,
           paddingTop: `env(safe-area-inset-top)`
         }}
@@ -186,10 +182,8 @@ export default function Home() {
           ref={iframeRef}
           className="h-full w-full border-0"
           title="Amironews Viewer"
-          // Sandbox for security
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
           style={{
-            // Handle iOS safe areas
             paddingTop: 'env(safe-area-inset-top)',
             visibility: isOffline && !localStorage.getItem(CACHE_KEY) ? 'hidden' : 'visible'
           }}
