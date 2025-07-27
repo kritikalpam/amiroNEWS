@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import OneSignal from 'react-onesignal';
 import { SplashScreen } from "@/components/splash-screen";
+import { OfflineScreen } from "@/components/offline-screen";
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
@@ -40,29 +41,32 @@ export default function Home() {
   }, []);
 
   const handleIframeLoad = () => {
-    setShowSplash(false);
+    // Only hide splash if we are online, otherwise the offline screen takes precedence.
+    if (!isOffline) {
+      setShowSplash(false);
+    }
   };
+
+  if (showSplash) {
+    return <SplashScreen />;
+  }
 
   return (
     <main className="h-screen w-screen overflow-hidden bg-background pt-safe-top">
-      {showSplash && <div className="loading-line"></div>}
-      {isOffline && (
-        <div className="offline-banner">
-          <div className="offline-banner-text">
-            OFFLINE MODE OFFLINE MODE OFFLINE MODE OFFLINE MODE OFFLINE MODE
-          </div>
-        </div>
-      )}
-      {showSplash && <SplashScreen />}
-      {iframeSrc && (
-        <iframe
-          src={iframeSrc}
-          className="h-full w-full border-0 transition-opacity duration-500"
-          title="Amironews Viewer"
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-          onLoad={handleIframeLoad}
-          style={{ opacity: showSplash ? 0 : 1 }}
-        />
+      {isOffline ? (
+        <OfflineScreen />
+      ) : (
+        <>
+          {iframeSrc && (
+            <iframe
+              src={iframeSrc}
+              className="h-full w-full border-0"
+              title="Amironews Viewer"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+              onLoad={handleIframeLoad}
+            />
+          )}
+        </>
       )}
     </main>
   );
