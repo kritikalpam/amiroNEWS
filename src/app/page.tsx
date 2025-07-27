@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { SplashScreen } from "@/components/splash-screen";
 import { OfflineScreen } from "@/components/offline-screen";
 import { ArrowDown, WifiOff } from "lucide-react";
 
@@ -31,7 +30,6 @@ async function fetchAndCacheWebsite() {
 }
 
 export default function Home() {
-  const [showSplash, setShowSplash] = useState(true);
   const [isOffline, setIsOffline] = useState(false);
   const [iframeSrc, setIframeSrc] = useState<string | undefined>(undefined);
   const [iframeSrcDoc, setIframeSrcDoc] = useState<string | undefined>(undefined);
@@ -62,11 +60,9 @@ export default function Home() {
       setIframeSrc(undefined);
       setIframeSrcDoc(html);
       setShowOfflineIndicator(true);
-      setShowSplash(false);
     } else {
       setIframeSrc(undefined);
       setIframeSrcDoc(undefined);
-      setShowSplash(false); // Hide splash to show offline screen
     }
     setIsLoading(false);
   }, []);
@@ -94,21 +90,14 @@ export default function Home() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Fallback to hide splash screen after 5 seconds
-    const splashFallbackTimer = setTimeout(() => {
-      setShowSplash(false);
-    }, 5000);
-
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
-      clearTimeout(splashFallbackTimer);
     };
   }, [handleRefresh, loadOfflineContent]);
 
   const handleIframeLoad = () => {
     setIsLoading(false);
-    setShowSplash(false);
   };
 
   const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
@@ -136,10 +125,6 @@ export default function Home() {
     setPulling(false);
     setPullDistance(0);
   };
-
-  if (showSplash) {
-    return <SplashScreen />;
-  }
 
   if (isOffline && !iframeSrcDoc) {
     return <OfflineScreen />;

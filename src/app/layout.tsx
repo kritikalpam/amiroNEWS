@@ -20,20 +20,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-                if (isDarkMode) {
-                  document.documentElement.classList.add("dark");
-                } else {
-                  document.documentElement.classList.remove("dark");
-                }
-              })();
-            `,
-          }}
-        />
       </head>
       <body className={`${inter.variable} font-body antialiased`}>{children}</body>
     </html>
