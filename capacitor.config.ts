@@ -11,6 +11,12 @@ const config: CapacitorConfig = {
       canRequestPopupForPushNotifications: true,
       launchURLsInApp: true,
     },
+    PushNotifications: {
+      presentationOptions: ["badge", "sound", "alert"],
+    },
+    Camera: {
+      provider: "com.capacitor.camera.CameraPlugin",
+    },
   },
 };
 
