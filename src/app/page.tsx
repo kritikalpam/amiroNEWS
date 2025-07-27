@@ -21,7 +21,7 @@ export default function Home() {
   const fetchAndCacheContent = useCallback(async () => {
     if (navigator.onLine) {
       try {
-        const response = await fetch("https://amironews.com");
+        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent("https://amironews.com")}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
