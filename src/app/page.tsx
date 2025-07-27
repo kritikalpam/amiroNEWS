@@ -132,7 +132,11 @@ export default function Home() {
             title="Amironews Viewer"
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
             onLoad={handleIframeLoad}
-            style={{ opacity: isLoading ? 0.5 : 1, transition: 'opacity 0.3s', paddingTop: isOffline ? '2rem' : '0' }}
+            style={{ 
+              opacity: isLoading ? 0.5 : 1, 
+              transition: 'opacity 0.3s, padding-top 0.3s', 
+              paddingTop: isOffline ? '2rem' : '0' 
+            }}
           />
         )}
       </>
