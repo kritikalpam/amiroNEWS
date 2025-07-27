@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import OneSignal from 'react-onesignal';
 import { SplashScreen } from "@/components/splash-screen";
-import { OfflineBanner } from "@/components/offline-banner";
+import { OfflineScreen } from "@/components/offline-screen";
 import { RefreshCw, ArrowDown } from "lucide-react";
 
 const PULL_THRESHOLD = 70; // 70px
@@ -36,10 +36,14 @@ export default function Home() {
     // Set initial online status and start loading the iframe
     const online = typeof navigator !== 'undefined' ? navigator.onLine : true;
     setIsOffline(!online);
-    setIframeSrc("https://amironews.com/");
+    if (online) {
+      setIframeSrc("https://amironews.com/");
+    }
 
     const handleOnline = () => {
       setIsOffline(false);
+      // Load iframe if it wasn't loaded before
+      setIframeSrc(prevSrc => prevSrc || "https://amironews.com/");
       handleRefresh(); // Auto-refresh when coming back online
     };
     const handleOffline = () => setIsOffline(true);
@@ -74,7 +78,6 @@ export default function Home() {
     if (!pulling || touchStartRef.current === null) return;
     const distance = e.touches[0].clientY - touchStartRef.current;
     if (distance > 0) {
-      // e.preventDefault(); // This can sometimes interfere with scrolling, let's be careful
       setPullDistance(Math.min(distance, PULL_THRESHOLD * 1.5));
     }
   };
@@ -91,6 +94,10 @@ export default function Home() {
   if (showSplash) {
     return <SplashScreen />;
   }
+  
+  if (isOffline) {
+    return <OfflineScreen />;
+  }
 
   return (
     <main 
@@ -100,48 +107,42 @@ export default function Home() {
       onTouchEnd={handleTouchEnd}
       style={{ touchAction: 'pan-y' }}
     >
-      {isOffline && <OfflineBanner />}
-      <>
-        <div
-          className="pull-to-refresh-indicator absolute top-0 left-0 right-0 z-10 flex flex-col items-center justify-center text-center text-muted-foreground transition-all duration-200"
-          style={{ 
-            opacity: isLoading ? 1 : pullDistance / PULL_THRESHOLD,
-            transform: `translateY(${isLoading ? PULL_THRESHOLD / 2 : Math.min(pullDistance, PULL_THRESHOLD)}px)`,
-            paddingTop: `env(safe-area-inset-top)`
-          }}
-        >
-          {!isOffline && (
-            <div className="flex items-center gap-2 rounded-full bg-card p-2 shadow-md">
-              {isLoading ? (
-                <RefreshCw className="h-4 w-4 animate-spin-slow" />
-              ) : (
-                <ArrowDown className={`h-4 w-4 transition-transform ${pullDistance > PULL_THRESHOLD ? 'rotate-180' : ''}`} />
-              )}
-            </div>
-          )}
-          {!isLoading && !isOffline && (
-            <span className="mt-1 text-xs font-semibold">
-              {pullDistance > PULL_THRESHOLD ? 'Release to refresh' : 'Pull to refresh'}
-            </span>
+      <div
+        className="pull-to-refresh-indicator absolute top-0 left-0 right-0 z-10 flex flex-col items-center justify-center text-center text-muted-foreground transition-all duration-200"
+        style={{ 
+          opacity: isLoading ? 1 : pullDistance / PULL_THRESHOLD,
+          transform: `translateY(${isLoading ? PULL_THRESHOLD / 2 : Math.min(pullDistance, PULL_THRESHOLD)}px)`,
+          paddingTop: `env(safe-area-inset-top)`
+        }}
+      >
+        <div className="flex items-center gap-2 rounded-full bg-card p-2 shadow-md">
+          {isLoading ? (
+            <RefreshCw className="h-4 w-4 animate-spin-slow" />
+          ) : (
+            <ArrowDown className={`h-4 w-4 transition-transform ${pullDistance > PULL_THRESHOLD ? 'rotate-180' : ''}`} />
           )}
         </div>
-
-        {iframeSrc && (
-          <iframe
-            src={iframeSrc}
-            className="h-full w-full border-0"
-            title="Amironews Viewer"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-            onLoad={handleIframeLoad}
-            style={{ 
-              opacity: isLoading ? 0.5 : 1, 
-              transition: 'opacity 0.3s, padding-top 0.3s', 
-              paddingTop: isOffline ? '2rem' : '0',
-              marginTop: isOffline ? 'env(safe-area-inset-top)' : '0'
-            }}
-          />
+        {!isLoading && (
+          <span className="mt-1 text-xs font-semibold">
+            {pullDistance > PULL_THRESHOLD ? 'Release to refresh' : 'Pull to refresh'}
+          </span>
         )}
-      </>
+      </div>
+
+      {iframeSrc && (
+        <iframe
+          src={iframeSrc}
+          className="h-full w-full border-0"
+          title="Amironews Viewer"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          onLoad={handleIframeLoad}
+          style={{ 
+            opacity: isLoading ? 0.5 : 1, 
+            transition: 'opacity 0.3s, padding-top 0.3s',
+            paddingTop: 'env(safe-area-inset-top)'
+          }}
+        />
+      )}
     </main>
   );
 }
