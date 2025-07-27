@@ -17,36 +17,36 @@ export default function Home() {
   const handleRefresh = useCallback(() => {
     if (navigator.onLine) {
       if (iframeRef.current) {
-        // To force a reload of the iframe, we can change its src.
-        // Appending a timestamp is a common trick.
+        // To force a reload of the iframe, we can change its src by appending a timestamp.
         iframeRef.current.src = `https://amironews.com?t=${Date.now()}`;
       }
     }
   }, []);
 
   useEffect(() => {
-    const onlineHandler = () => {
+    const handleOnline = () => {
       setIsOffline(false);
-      handleRefresh(); // Try to refresh content when coming online
+      handleRefresh();
     };
-    const offlineHandler = () => {
+
+    const handleOffline = () => {
       setIsOffline(true);
     };
-    
-    window.addEventListener('online', onlineHandler);
-    window.addEventListener('offline', offlineHandler);
 
-    if(typeof window !== 'undefined'){
-      setIsOffline(!navigator.onLine);
-    }
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    // Set initial online status
+    setIsOffline(!navigator.onLine);
     
+    // Set initial iframe src if online
     if (navigator.onLine && iframeRef.current) {
         iframeRef.current.src = "https://amironews.com";
     }
 
     return () => {
-      window.removeEventListener('online', onlineHandler);
-      window.removeEventListener('offline', offlineHandler);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, [handleRefresh]);
 
@@ -99,28 +99,28 @@ export default function Home() {
         }}
       >
          <div className="flex items-center justify-center p-4">
-           {!pulling || pullDistance < PULL_THRESHOLD ? (
-             <ArrowDown className={`h-6 w-6 transition-transform ${pullDistance > PULL_THRESHOLD ? 'rotate-180' : ''}`} />
+           {pulling && pullDistance >= PULL_THRESHOLD ? (
+             <svg
+                className="animate-spin h-6 w-6 text-primary"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <defs>
+                  <linearGradient id="spinner-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(220, 38, 38, 1)" />
+                    <stop offset="100%" stopColor="rgba(37, 99, 235, 1)" />
+                  </linearGradient>
+                </defs>
+                <path
+                  stroke="url(#spinner-gradient)"
+                  strokeLinecap="round"
+                  strokeWidth="4"
+                  d="M12 2 a10 10 0 0 1 10 10"
+                />
+              </svg>
            ) : (
-            <svg
-              className="animate-spin h-6 w-6 text-primary"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <defs>
-                <linearGradient id="spinner-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="rgba(220, 38, 38, 1)" />
-                  <stop offset="100%" stopColor="rgba(37, 99, 235, 1)" />
-                </linearGradient>
-              </defs>
-              <path
-                stroke="url(#spinner-gradient)"
-                strokeLinecap="round"
-                strokeWidth="4"
-                d="M12 2 a10 10 0 0 1 10 10"
-              />
-            </svg>
+            <ArrowDown className={`h-6 w-6 transition-transform ${pullDistance > PULL_THRESHOLD ? 'rotate-180' : ''}`} />
            )}
         </div>
       </div>

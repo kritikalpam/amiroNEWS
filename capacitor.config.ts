@@ -6,17 +6,10 @@ const config: CapacitorConfig = {
   webDir: 'out',
   bundledWebRuntime: false,
   plugins: {
-    OneSignal: {
-      disableConsentRequirement: false,
-      canRequestPopupForPushNotifications: true,
-      launchURLsInApp: true,
-    },
     PushNotifications: {
       presentationOptions: ["badge", "sound", "alert"],
     },
-    Camera: {
-      provider: "com.capacitor.camera.CameraPlugin",
-    },
+    Camera: {},
   },
 };
 
