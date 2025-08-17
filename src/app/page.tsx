@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Head from 'next/head';
+import Script from 'next/script';
 
 export default function Home() {
   const [history, setHistory] = useState(['https://amironews.com/']);
@@ -53,7 +53,7 @@ export default function Home() {
     if (typeof window !== 'undefined' && window.OneSignal) {
       window.OneSignal.push(() => {
         window.OneSignal.init({
-          appId: '3508a1ed-ec7c-45dc-8b41-a0652886dad4', // Replace with your App ID
+          appId: '3508a1ed-ec7c-45dc-8b41-a0652886dad4',
           safari_web_id: 'web.onesignal.auto.123456-7890-4444-8888-abcdef123456',
           allowLocalhostAsSecureOrigin: true,
         });
@@ -63,13 +63,11 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <script
-          src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
-          defer
-          onLoad={initOneSignal}
-        ></script>
-      </Head>
+      <Script
+        src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+        defer
+        onLoad={initOneSignal}
+      ></Script>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#fff' }}>
        {history.length > 1 && (
          <header style={{
