@@ -53,7 +53,7 @@ export default function Home() {
     if (typeof window !== 'undefined' && window.OneSignal) {
       window.OneSignal.push(() => {
         window.OneSignal.init({
-          appId: 'YOUR_ONESIGNAL_APP_ID', // Replace with your App ID
+          appId: '3508a1ed-ec7c-45dc-8b41-a0652886dad4', // Replace with your App ID
           safari_web_id: 'web.onesignal.auto.123456-7890-4444-8888-abcdef123456',
           allowLocalhostAsSecureOrigin: true,
         });
