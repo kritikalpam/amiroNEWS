@@ -11,7 +11,11 @@ export default function Home() {
   const [inputUrl, setInputUrl] = useState(currentUrl);
 
   const navigateTo = (url: string) => {
-    if (url !== currentUrl) {
+    // A simple check to avoid loops with about:blank
+    if (url === 'about:blank') return;
+
+    // Check if the new URL is already the last one in history
+    if (url !== history[history.length - 1]) {
       const newHistory = [...history, url];
       setHistory(newHistory);
       setCurrentUrl(url);
@@ -32,17 +36,16 @@ export default function Home() {
   const handleIframeLoad = () => {
     try {
       const iframeLocation = iframeRef.current?.contentWindow?.location.href;
-      // Check if it's a genuine navigation and not just a reload of the same URL
-      if (iframeLocation && iframeLocation !== currentUrl && iframeLocation !== 'about:blank') {
-         // To prevent an infinite loop, only update if the new location isn't already the last one in history
-         if(iframeLocation !== history[history.length - 1]) {
-            navigateTo(iframeLocation);
-         }
+      if (iframeLocation && iframeLocation !== currentUrl) {
+         navigateTo(iframeLocation);
       }
     } catch (error) {
-        // Cross-origin error. We can't get the URL, but the user initiated this.
-        // The back button is already visible, so the user can still go back.
-        console.error("Cross-origin security error on load:", error);
+        // This error is expected for cross-origin iframes.
+        // We can't read the URL, so we rely on the user to navigate
+        // and our back button to function. The button will appear
+        // if we successfully navigated to a page we could read
+        // or if a link click in a sandboxed iframe changed the src.
+        console.error("Cross-origin security error:", error);
     }
   };
 
@@ -68,42 +71,43 @@ export default function Home() {
         ></script>
       </Head>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#fff' }}>
-        <header style={{
-          display: 'flex',
-          alignItems: 'center',
-          padding: '8px',
-          backgroundColor: '#f1f1f1',
-          borderBottom: '1px solid #ddd',
-          flexShrink: 0,
-        }}>
-          <button
-            onClick={handleBack}
-            disabled={history.length <= 1}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: history.length <= 1 ? 'not-allowed' : 'pointer',
-              fontSize: '24px',
-              padding: '0 12px',
-              marginRight: '10px',
-              color: history.length <= 1 ? '#ccc' : '#000',
-            }}
-            aria-label="Go back"
-          >
-            &larr;
-          </button>
-          <div style={{
-            flex: 1,
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            color: '#333'
+       {history.length > 1 && (
+         <header style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '8px',
+            backgroundColor: '#f1f1f1',
+            borderBottom: '1px solid #ddd',
+            flexShrink: 0,
           }}>
-            {currentUrl}
-          </div>
-        </header>
+            <button
+              onClick={handleBack}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '24px',
+                padding: '0 12px',
+                marginRight: '10px',
+                color: '#000',
+              }}
+              aria-label="Go back"
+            >
+              &larr;
+            </button>
+            <div style={{
+              flex: 1,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              color: '#333'
+            }}>
+              {currentUrl}
+            </div>
+          </header>
+        )}
         <iframe
-          key={currentUrl} // Re-mounts iframe on URL change
+          key={currentUrl}
           ref={iframeRef}
           src={currentUrl}
           onLoad={handleIframeLoad}
