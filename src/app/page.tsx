@@ -8,32 +8,41 @@ export default function Home() {
   const [history, setHistory] = useState(['https://amironews.com/']);
   const [currentUrl, setCurrentUrl] = useState('https://amironews.com/');
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [inputUrl, setInputUrl] = useState(currentUrl);
+
+  const navigateTo = (url: string) => {
+    if (url !== currentUrl) {
+      const newHistory = [...history, url];
+      setHistory(newHistory);
+      setCurrentUrl(url);
+      setInputUrl(url);
+    }
+  };
 
   const handleBack = () => {
     if (history.length > 1) {
       const newHistory = history.slice(0, -1);
+      const prevUrl = newHistory[newHistory.length - 1];
       setHistory(newHistory);
-      setCurrentUrl(newHistory[newHistory.length - 1]);
+      setCurrentUrl(prevUrl);
+      setInputUrl(prevUrl);
     }
   };
 
   const handleIframeLoad = () => {
     try {
       const iframeLocation = iframeRef.current?.contentWindow?.location.href;
-      if (iframeLocation && iframeLocation !== currentUrl) {
-        // A navigation happened inside the iframe
-        // This could be an external link
-        if (iframeLocation !== history[history.length - 1]) {
-            const newHistory = [...history, iframeLocation];
-            setHistory(newHistory);
-            setCurrentUrl(iframeLocation);
-        }
+      // Check if it's a genuine navigation and not just a reload of the same URL
+      if (iframeLocation && iframeLocation !== currentUrl && iframeLocation !== 'about:blank') {
+         // To prevent an infinite loop, only update if the new location isn't already the last one in history
+         if(iframeLocation !== history[history.length - 1]) {
+            navigateTo(iframeLocation);
+         }
       }
     } catch (error) {
-        // A cross-origin error likely means we've navigated to an external site.
-        // We can't get the URL directly, so we rely on what we have.
-        // This is a limitation, but the back button will still work.
-        console.error("Cross-origin security error:", error);
+        // Cross-origin error. We can't get the URL, but the user initiated this.
+        // The back button is already visible, so the user can still go back.
+        console.error("Cross-origin security error on load:", error);
     }
   };
 
@@ -59,40 +68,42 @@ export default function Home() {
         ></script>
       </Head>
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#fff' }}>
-        {history.length > 1 && (
-          <header style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '8px',
-            backgroundColor: '#f1f1f1',
-            borderBottom: '1px solid #ddd',
-            flexShrink: 0,
+        <header style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '8px',
+          backgroundColor: '#f1f1f1',
+          borderBottom: '1px solid #ddd',
+          flexShrink: 0,
+        }}>
+          <button
+            onClick={handleBack}
+            disabled={history.length <= 1}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: history.length <= 1 ? 'not-allowed' : 'pointer',
+              fontSize: '24px',
+              padding: '0 12px',
+              marginRight: '10px',
+              color: history.length <= 1 ? '#ccc' : '#000',
+            }}
+            aria-label="Go back"
+          >
+            &larr;
+          </button>
+          <div style={{
+            flex: 1,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            color: '#333'
           }}>
-            <button
-              onClick={handleBack}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '24px',
-                padding: '0 12px',
-                marginRight: '10px'
-              }}
-              aria-label="Go back"
-            >
-              &larr;
-            </button>
-            <div style={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis'
-            }}>
-              {currentUrl}
-            </div>
-          </header>
-        )}
+            {currentUrl}
+          </div>
+        </header>
         <iframe
-          key={currentUrl}
+          key={currentUrl} // Re-mounts iframe on URL change
           ref={iframeRef}
           src={currentUrl}
           onLoad={handleIframeLoad}
