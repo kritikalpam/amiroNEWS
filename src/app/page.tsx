@@ -1,8 +1,29 @@
 
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Script from 'next/script';
+import React from 'react';
+
+const MemoizedIframe = React.memo(function MemoizedIframe({ src, onLoad, iframeRef }: { src: string; onLoad: () => void; iframeRef: React.RefObject<HTMLIFrameElement> }) {
+  return (
+    <iframe
+      key={src}
+      ref={iframeRef}
+      src={src}
+      onLoad={onLoad}
+      style={{
+        flex: '1',
+        width: '100%',
+        border: 'none',
+      }}
+      title="Amiro News"
+      sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"
+    />
+  );
+});
+MemoizedIframe.displayName = 'MemoizedIframe';
+
 
 export default function Home() {
   const [history, setHistory] = useState(['https://amironews.com/']);
@@ -10,30 +31,36 @@ export default function Home() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [inputUrl, setInputUrl] = useState(currentUrl);
 
-  const navigateTo = (url: string) => {
+  const navigateTo = useCallback((url: string) => {
     // A simple check to avoid loops with about:blank
     if (url === 'about:blank') return;
 
     // Check if the new URL is already the last one in history
-    if (url !== history[history.length - 1]) {
-      const newHistory = [...history, url];
-      setHistory(newHistory);
-      setCurrentUrl(url);
-      setInputUrl(url);
-    }
-  };
+    setHistory(prevHistory => {
+        if (url !== prevHistory[prevHistory.length - 1]) {
+            const newHistory = [...prevHistory, url];
+            setCurrentUrl(url);
+            setInputUrl(url);
+            return newHistory;
+        }
+        return prevHistory;
+    });
+  }, []);
 
-  const handleBack = () => {
-    if (history.length > 1) {
-      const newHistory = history.slice(0, -1);
-      const prevUrl = newHistory[newHistory.length - 1];
-      setHistory(newHistory);
-      setCurrentUrl(prevUrl);
-      setInputUrl(prevUrl);
-    }
-  };
+  const handleBack = useCallback(() => {
+    setHistory(prevHistory => {
+        if (prevHistory.length > 1) {
+            const newHistory = prevHistory.slice(0, -1);
+            const prevUrl = newHistory[newHistory.length - 1];
+            setCurrentUrl(prevUrl);
+            setInputUrl(prevUrl);
+            return newHistory;
+        }
+        return prevHistory;
+    });
+  }, []);
 
-  const handleIframeLoad = () => {
+  const handleIframeLoad = useCallback(() => {
     try {
       const iframeLocation = iframeRef.current?.contentWindow?.location.href;
       if (iframeLocation && iframeLocation !== currentUrl) {
@@ -47,9 +74,9 @@ export default function Home() {
         // or if a link click in a sandboxed iframe changed the src.
         console.error("Cross-origin security error:", error);
     }
-  };
+  }, [currentUrl, navigateTo]);
 
-  const initOneSignal = () => {
+  const initOneSignal = useCallback(() => {
     const OneSignal = window.OneSignal || [];
     OneSignal.push(function() {
       OneSignal.init({
@@ -58,7 +85,7 @@ export default function Home() {
         allowLocalhostAsSecureOrigin: true,
       });
     });
-  };
+  }, []);
 
   return (
     <>
@@ -103,18 +130,10 @@ export default function Home() {
             </div>
           </header>
         )}
-        <iframe
-          key={currentUrl}
-          ref={iframeRef}
-          src={currentUrl}
-          onLoad={handleIframeLoad}
-          style={{
-            flex: '1',
-            width: '100%',
-            border: 'none',
-          }}
-          title="Amiro News"
-          sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts"
+        <MemoizedIframe
+            src={currentUrl}
+            onLoad={handleIframeLoad}
+            iframeRef={iframeRef}
         />
       </div>
     </>
