@@ -6,7 +6,7 @@ import "@/lib/firebase";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Amiro News",
+  title: "amiroNEWS",
   description: "A dedicated browser for Amiro News",
   manifest: "/manifest.json",
 };

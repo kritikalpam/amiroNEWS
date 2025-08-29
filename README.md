@@ -75,8 +75,8 @@ While this is a web application, you can wrap it in a native Android app using a
 2.  Click **File > New > New Project...**.
 3.  Select the **Empty Views Activity** template and click **Next**.
 4.  Configure your project:
-    - **Name:** Your App Name (e.g., Amiro News)
-    - **Package name:** com.example.amironews
+    - **Name:** amiroNEWS
+    - **Package name:** com.amiro.news
     - **Language:** Kotlin
     - **Minimum SDK:** API 21 or higher is recommended.
 5.  Click **Finish**.
@@ -120,11 +120,11 @@ Your app needs permission to access the internet. If you miss this step, you wil
 
 ### Step 4: Load Your Web App in the MainActivity
 
-1.  Open `app/src/main/java/com/yourpackagename/MainActivity.kt`.
+1.  Open `app/src/main/java/com/amiro/news/MainActivity.kt`.
 2.  Modify the `MainActivity` class to find the `WebView`, enable JavaScript, and load your deployed web app's URL. This is another critical step; if JavaScript is not enabled, your app will not load.
 
     ```kotlin
-    package com.example.amironews // Make sure this matches your package name
+    package com.amiro.news // Make sure this matches your package name
 
     import android.os.Bundle
     import android.webkit.WebView
