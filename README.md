@@ -4,7 +4,7 @@
 
 1. Android Studio → *New Project* → **Empty Views Activity**
 2. Name: `AmiroNews`
-3. Package: `com.amironews.app`
+3. Package: `com.amiro.news`
 4. Minimum SDK: **21 (Android 5.0)** or higher
 5. Language: **Kotlin**
 
@@ -14,11 +14,11 @@ Make sure these bits exist:
 
 ```gradle
 android {
-    namespace "com.amironews.app"
+    namespace "com.amiro.news"
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.amironews.app"
+        applicationId "com.amiro.news"
         minSdk 21
         targetSdk 34
         versionCode 1
@@ -113,10 +113,10 @@ dependencies {
 
 ## 6) MainActivity (WebView wrapper)
 
-`app/src/main/java/com/amironews/app/MainActivity.kt`
+`app/src/main/java/com/amiro/news/MainActivity.kt`
 
 ```kotlin
-package com.amironews.app
+package com.amiro.news
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -227,7 +227,7 @@ class MainActivity : AppCompatActivity() {
 1. Xcode → *Create a new project* → **App**
 2. Product Name: `AmiroNews`
 3. Interface: **SwiftUI**; Language: **Swift**
-4. Bundle ID: `com.amironews.app`
+4. Bundle ID: `com.amiro.news`
 5. Minimum iOS: **15.0** (or as you prefer)
 
 ## 2) Info.plist
@@ -342,7 +342,7 @@ struct AmiroNewsApp: App {
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.amironews.app",
+      "package_name": "com.amiro.news",
       "sha256_cert_fingerprints": ["PASTE_YOUR_RELEASE_KEY_SHA256"]
     }
   }
