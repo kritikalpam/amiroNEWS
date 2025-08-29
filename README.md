@@ -81,9 +81,9 @@ While this is a web application, you can wrap it in a native Android app using a
     - **Minimum SDK:** API 21 or higher is recommended.
 5.  Click **Finish**.
 
-### Step 2: Add Internet Permission
+### Step 2: Add Internet Permission (Crucial Step)
 
-Your app needs permission to access the internet.
+Your app needs permission to access the internet. If you miss this step, you will only see a blank screen in the emulator.
 
 1.  Open `app/src/main/AndroidManifest.xml`.
 2.  Add the following line just before the `<application>` tag:
@@ -121,7 +121,7 @@ Your app needs permission to access the internet.
 ### Step 4: Load Your Web App in the MainActivity
 
 1.  Open `app/src/main/java/com/yourpackagename/MainActivity.kt`.
-2.  Modify the `MainActivity` class to find the `WebView`, enable JavaScript, and load your deployed web app's URL.
+2.  Modify the `MainActivity` class to find the `WebView`, enable JavaScript, and load your deployed web app's URL. This is another critical step; if JavaScript is not enabled, your app will not load.
 
     ```kotlin
     package com.example.amironews // Make sure this matches your package name
@@ -138,14 +138,15 @@ Your app needs permission to access the internet.
 
             val webView: WebView = findViewById(R.id.webview)
 
-            // Enable JavaScript
+            // Enable JavaScript (CRITICAL for modern web apps)
             webView.settings.javaScriptEnabled = true
 
-            // Set a WebViewClient to handle navigation within the WebView
+            // Set a WebViewClient to handle navigation within the WebView itself
+            // instead of opening links in the default browser.
             webView.webViewClient = WebViewClient()
 
             // Load your deployed PWA URL
-            // IMPORTANT: Replace this with your actual URL
+            // IMPORTANT: Replace this with your actual public URL
             webView.loadUrl("https://amironews.com/")
         }
     }
@@ -153,4 +154,4 @@ Your app needs permission to access the internet.
 
 ### Step 5: Build and Run
 
-You can now run your app on an Android emulator or a physical device. It will open and display your web application in a full-screen `WebView`. From here, you can follow the standard Google Play Store process for signing and publishing your app.
+You can now run your app on an Android emulator or a physical device. It should open and display your web application in a full-screen `WebView`. From here, you can follow the standard Google Play Store process for signing and publishing your app.
