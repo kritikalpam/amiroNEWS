@@ -139,58 +139,87 @@ Your app needs the right permissions and configuration to access the internet an
     </network-security-config>
     ```
 
-### Step 3: Configure the WebView in the Layout
+### Step 3: Configure the WebView Layout with a Progress Bar
 
 1.  Open `app/src/main/res/layout/activity_main.xml`.
-2.  Replace the default `TextView` with a `WebView`. The file should look like this:
+2.  Replace the default content with the following `FrameLayout`, which includes both the `WebView` and a `ProgressBar`.
 
     ```xml
     <?xml version="1.0" encoding="utf-8"?>
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent" android:layout_height="match_parent">
 
-        <WebView
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:indeterminate="false"
+            android:visibility="gone"/>
+
+        <android.webkit.WebView
             android:id="@+id/webview"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
     ```
 
-### Step 4: Load Your Web App in the MainActivity
+### Step 4: Load Your Web App and Manage the Progress Bar
 
 1.  Open `app/src/main/java/com/amiro/news/MainActivity.kt`.
-2.  Modify the `MainActivity` class to find the `WebView`, enable JavaScript, and load your deployed web app's URL.
+2.  Modify the `MainActivity` class to enable JavaScript, handle back-press navigation, and manage the `ProgressBar`.
 
     ```kotlin
     package com.amiro.news
 
     import android.os.Bundle
+    import android.view.View
+    import android.webkit.WebChromeClient
     import android.webkit.WebView
     import android.webkit.WebViewClient
+    import android.widget.ProgressBar
+    import androidx.activity.OnBackPressedCallback
     import androidx.appcompat.app.AppCompatActivity
 
     class MainActivity : AppCompatActivity() {
+        private lateinit var webView: WebView
+        private lateinit var progressBar: ProgressBar
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setContentView(R.layout.activity_main)
 
-            val webView: WebView = findViewById(R.id.webview)
+            webView = findViewById(R.id.webview)
+            progressBar = findViewById(R.id.progressBar)
 
             // Enable JavaScript (CRITICAL for modern web apps)
             webView.settings.javaScriptEnabled = true
 
-            // Set a WebViewClient to handle navigation within the WebView itself
-            // instead of opening links in the default browser.
+            // Set clients for handling rendering and navigation
             webView.webViewClient = WebViewClient()
+            webView.webChromeClient = object : WebChromeClient() {
+                override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                    if (newProgress < 100) {
+                        progressBar.visibility = View.VISIBLE
+                        progressBar.progress = newProgress
+                    } else {
+                        progressBar.visibility = View.GONE
+                    }
+                }
+            }
+
+            // Handle the back button to navigate in WebView history
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (webView.canGoBack()) {
+                        webView.goBack()
+                    } else {
+                        // If there's no history, proceed with default back behavior
+                        isEnabled = false
+                        onBackPressedDispatcher.onBackPressed()
+                    }
+                }
+            })
 
             // Load your deployed PWA URL
             webView.loadUrl("https://amironews.com/")
@@ -200,4 +229,4 @@ Your app needs the right permissions and configuration to access the internet an
 
 ### Step 5: Build and Run
 
-You can now run your app on an Android emulator or a physical device. From here, you can follow the standard Google Play Store process for signing and publishing your app.
+You can now run your app on an Android emulator or a physical device. It should open, display your web application in a full-screen `WebView`, and show a progress bar at the top as the page loads. From here, you can follow the standard Google Play Store process for signing and publishing your app.
