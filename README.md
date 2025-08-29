@@ -62,3 +62,95 @@ This will generate an optimized version of the app in the `.next` directory. You
 ```bash
 npm start
 ```
+
+## Building for Android (Android Studio Guide)
+
+While this is a web application, you can wrap it in a native Android app using a `WebView`. This allows you to publish it on the Google Play Store.
+
+**Prerequisite:** You must first deploy your Next.js application to a public URL (e.g., using Vercel, Netlify, or your own server).
+
+### Step 1: Create a New Android Studio Project
+
+1.  Open Android Studio.
+2.  Click **File > New > New Project...**.
+3.  Select the **Empty Views Activity** template and click **Next**.
+4.  Configure your project:
+    - **Name:** Your App Name (e.g., Amiro News)
+    - **Package name:** com.example.amironews
+    - **Language:** Kotlin
+    - **Minimum SDK:** API 21 or higher is recommended.
+5.  Click **Finish**.
+
+### Step 2: Add Internet Permission
+
+Your app needs permission to access the internet.
+
+1.  Open `app/src/main/AndroidManifest.xml`.
+2.  Add the following line just before the `<application>` tag:
+
+    ```xml
+    <uses-permission android:name="android.permission.INTERNET" />
+    ```
+
+### Step 3: Configure the WebView in the Layout
+
+1.  Open `app/src/main/res/layout/activity_main.xml`.
+2.  Replace the default `TextView` with a `WebView`. The file should look like this:
+
+    ```xml
+    <?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    ```
+
+### Step 4: Load Your Web App in the MainActivity
+
+1.  Open `app/src/main/java/com/yourpackagename/MainActivity.kt`.
+2.  Modify the `MainActivity` class to find the `WebView`, enable JavaScript, and load your deployed web app's URL.
+
+    ```kotlin
+    package com.example.amironews // Make sure this matches your package name
+
+    import android.os.Bundle
+    import android.webkit.WebView
+    import android.webkit.WebViewClient
+    import androidx.appcompat.app.AppCompatActivity
+
+    class MainActivity : AppCompatActivity() {
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_main)
+
+            val webView: WebView = findViewById(R.id.webview)
+
+            // Enable JavaScript
+            webView.settings.javaScriptEnabled = true
+
+            // Set a WebViewClient to handle navigation within the WebView
+            webView.webViewClient = WebViewClient()
+
+            // Load your deployed PWA URL
+            // IMPORTANT: Replace this with your actual URL
+            webView.loadUrl("https://amironews.com/")
+        }
+    }
+    ```
+
+### Step 5: Build and Run
+
+You can now run your app on an Android emulator or a physical device. It will open and display your web application in a full-screen `WebView`. From here, you can follow the standard Google Play Store process for signing and publishing your app.
