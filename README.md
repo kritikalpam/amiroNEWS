@@ -1,4 +1,4 @@
-# Amiro News - PWA Wrapper
+# amiroNEWS - PWA Wrapper
 
 This project is a simple Next.js application that acts as a dedicated, full-screen browser for the [Amiro News](https://amironews.com/) website. It is configured as a Progressive Web App (PWA), allowing it to be "installed" on a user's home screen for an app-like experience.
 
@@ -81,15 +81,62 @@ While this is a web application, you can wrap it in a native Android app using a
     - **Minimum SDK:** API 21 or higher is recommended.
 5.  Click **Finish**.
 
-### Step 2: Add Internet Permission (Crucial Step)
+### Step 2: Configure the Android Manifest
 
-Your app needs permission to access the internet. If you miss this step, you will only see a blank screen in the emulator.
+Your app needs the right permissions and configuration to access the internet and handle deep links.
 
 1.  Open `app/src/main/AndroidManifest.xml`.
-2.  Add the following line just before the `<application>` tag:
+2.  Replace the entire contents of the file with the following code. This manifest includes internet permissions, deep link handling for `amironews.com`, and other production-ready settings.
 
     ```xml
-    <uses-permission android:name="android.permission.INTERNET" />
+    <?xml version="1.0" encoding="utf-8"?>
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.amiro.news">
+
+        <uses-permission android:name="android.permission.INTERNET"/>
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+        <application
+            android:usesCleartextTraffic="false"
+            android:networkSecurityConfig="@xml/network_security_config"
+            android:allowBackup="true"
+            android:label="amiroNEWS"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+            <activity
+                android:name=".MainActivity"
+                android:exported="true"
+                android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+                android:launchMode="singleTop">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN"/>
+                    <category android:name="android.intent.category.LAUNCHER"/>
+                </intent-filter>
+
+                <!-- Handle app links for amironews.com -->
+                <intent-filter android:autoVerify="true">
+                    <action android:name="android.intent.action.VIEW"/>
+                    <category android:name="android.intent.category.DEFAULT"/>
+                    <category android:name="android.intent.category.BROWSABLE"/>
+                    <data android:scheme="https" android:host="www.amironews.com"/>
+                    <data android:scheme="https" android:host="amironews.com"/>
+                </intent-filter>
+            </activity>
+        </application>
+    </manifest>
+    ```
+
+3.  **Note on Network Security:** The manifest above references a `network_security_config` file. This enhances security by ensuring your app only communicates with specific domains over HTTPS. You must create this file. Go to `app/src/main/res/`, create a new directory named `xml`, and inside `xml`, create a new file named `network_security_config.xml` with the following content:
+
+    ```xml
+    <?xml version="1.0" encoding="utf-8"?>
+    <network-security-config>
+        <domain-config cleartextTrafficPermitted="false">
+            <domain includeSubdomains="true">amironews.com</domain>
+        </domain-config>
+    </network-security-config>
     ```
 
 ### Step 3: Configure the WebView in the Layout
@@ -121,10 +168,10 @@ Your app needs permission to access the internet. If you miss this step, you wil
 ### Step 4: Load Your Web App in the MainActivity
 
 1.  Open `app/src/main/java/com/amiro/news/MainActivity.kt`.
-2.  Modify the `MainActivity` class to find the `WebView`, enable JavaScript, and load your deployed web app's URL. This is another critical step; if JavaScript is not enabled, your app will not load.
+2.  Modify the `MainActivity` class to find the `WebView`, enable JavaScript, and load your deployed web app's URL.
 
     ```kotlin
-    package com.amiro.news // Make sure this matches your package name
+    package com.amiro.news
 
     import android.os.Bundle
     import android.webkit.WebView
@@ -146,7 +193,6 @@ Your app needs permission to access the internet. If you miss this step, you wil
             webView.webViewClient = WebViewClient()
 
             // Load your deployed PWA URL
-            // IMPORTANT: Replace this with your actual public URL
             webView.loadUrl("https://amironews.com/")
         }
     }
@@ -154,4 +200,4 @@ Your app needs permission to access the internet. If you miss this step, you wil
 
 ### Step 5: Build and Run
 
-You can now run your app on an Android emulator or a physical device. It should open and display your web application in a full-screen `WebView`. From here, you can follow the standard Google Play Store process for signing and publishing your app.
+You can now run your app on an Android emulator or a physical device. From here, you can follow the standard Google Play Store process for signing and publishing your app.
